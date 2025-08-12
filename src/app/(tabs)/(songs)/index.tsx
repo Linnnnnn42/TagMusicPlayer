@@ -4,7 +4,7 @@ import defaultStyle from '@/styles/style'
 export default function SongsTab() {
     return (
         <View style={defaultStyle.container}>
-            <Text style={defaultStyle.text}>Songs screen</Text>
+            <Text style={defaultStyle.text}></Text>
         </View>
     )
 }

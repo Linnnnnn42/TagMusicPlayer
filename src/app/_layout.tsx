@@ -8,7 +8,7 @@ export default function AppLayout() {
         <SafeAreaProvider>
             <RootNavigation />
 
-            <StatusBar style={'auto'} />
+            <StatusBar style={'dark'} />
         </SafeAreaProvider>
     )
 }

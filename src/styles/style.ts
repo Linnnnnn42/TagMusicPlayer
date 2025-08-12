@@ -7,7 +7,7 @@ const defaultStyle = StyleSheet.create({
         backgroundColor: colors.background,
     },
     text: {
-        fontSize: fontSize.base,
+        fontSize: fontSize.medium,
         color: colors.text,
     },
 })
