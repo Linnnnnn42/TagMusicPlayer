@@ -13,3 +13,5 @@ const defaultStyle = StyleSheet.create({
 })
 
 export const utilsStyles = StyleSheet.create({})
+
+export default defaultStyle
