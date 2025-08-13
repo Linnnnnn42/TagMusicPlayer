@@ -3,7 +3,7 @@ import * as MediaLibrary from 'expo-media-library'
 import { useEffect, useState } from 'react'
 import defaultStyle, { songsTabDevStyles } from '@/styles/style'
 
-export default function () {
+export const SongsList = () => {
     const [permissionResponse, requestPermission] = MediaLibrary.usePermissions({
         granularPermissions: [MediaLibrary.MediaType.audio],
         writeOnly: false,
@@ -57,42 +57,19 @@ export default function () {
 
     // console.log(assets)
 
-    return (
-        <SafeAreaView style={songsTabDevStyles.container}>
-            <View style={songsTabDevStyles.header}>
-                <Text style={songsTabDevStyles.title}>Songs @ Music Lib</Text>
-                <Button title="Refresh" onPress={loadMusicAssets} disabled={loading} />
-                {/*<Button*/}
-                {/*    title="GIT"*/}
-                {/*    onPress={async () => {*/}
-                {/*        return await MediaLibrary.getPermissionsAsync(false, [*/}
-                {/*            MediaLibrary.MediaType.audio,*/}
-                {/*        ])*/}
-                {/*    }}*/}
-                {/*    disabled={loading}*/}
-                {/*/>*/}
-            </View>
-
-            {loading ? (
-                <View style={songsTabDevStyles.loadingContainer}>
-                    <Text>Loading...</Text>
-                </View>
-            ) : assets.length === 0 ? (
-                <View style={songsTabDevStyles.emptyContainer}>
-                    <Text>No files found</Text>
-                </View>
-            ) : (
-                <FlatList
-                    data={assets}
-                    renderItem={({ item }) => (
-                        <Text style={defaultStyle.text}>
-                            {item.filename}
-                            {/*{item.title}*/}
-                        </Text>
-                    )}
-                    keyExtractor={(item) => item.id}
-                />
-            )}
-        </SafeAreaView>
+    return loading ? (
+        <View style={songsTabDevStyles.loadingContainer}>
+            <Text>Loading...</Text>
+        </View>
+    ) : assets.length === 0 ? (
+        <View style={songsTabDevStyles.emptyContainer}>
+            <Text>No files found</Text>
+        </View>
+    ) : (
+        <FlatList
+            data={assets}
+            renderItem={({ item }) => <Text style={defaultStyle.text}>{item.filename}</Text>}
+            keyExtractor={(item) => item.id}
+        />
     )
 }
