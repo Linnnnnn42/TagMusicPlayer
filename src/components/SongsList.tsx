@@ -1,8 +1,9 @@
 import { Button, FlatList, Text, View } from 'react-native'
 import { songsTabStyles } from '@/styles/style'
-import { SongsListItem } from '@/components/SongsListItem'
+import { SongsListItem, SongsListItemProps } from '@/components/SongsListItem'
 import { colors, fontSize } from '@/constants/tokens'
 import useGetMediaLibrary from '@/hooks/useGetMediaLibrary'
+import { useCallback } from 'react'
 
 type SongsListProps = {
     mediaLibrary?: ReturnType<typeof useGetMediaLibrary>
@@ -13,6 +14,8 @@ export const SongsList = ({ mediaLibrary, filteredMusicInfoList }: SongsListProp
     const { loading, length, musicInfoList, minimalMusicInfoList, loadMusicLibrary } = {
         ...mediaLibrary,
     }
+
+    const renderItem = useCallback(({ item: song }: { item: SongsListItemProps['song'] }) => <SongsListItem song={song} />, [])
 
     return (
         <View style={{ flex: 1 }}>
@@ -33,7 +36,7 @@ export const SongsList = ({ mediaLibrary, filteredMusicInfoList }: SongsListProp
             ) : (
                 <FlatList
                     data={filteredMusicInfoList}
-                    renderItem={({ item: song }) => <SongsListItem song={song} />}
+                    renderItem={renderItem}
                     keyExtractor={(song) => song.id}
                     contentContainerStyle={{
                         paddingTop: 10,
