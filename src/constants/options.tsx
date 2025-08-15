@@ -1,6 +1,7 @@
 import { NativeStackNavigationOptions } from '@react-navigation/native-stack'
 import { colors, fontSize, fontWeight } from '@/constants/tokens'
 import { View } from 'react-native'
+import HeaderRight from '@/components/HeaderRight'
 
 export const StackScreenWithSearchBar: NativeStackNavigationOptions = {
     headerTitleStyle: {
@@ -16,3 +17,9 @@ export const StackScreenWithSearchBar: NativeStackNavigationOptions = {
     headerTintColor: colors.primary,
     headerLeft: () => <View style={{ width: 20, height: 100 }} />,
 }
+
+// get customized headerRightComponent by tabName
+export const getHeaderRight =
+    (tabName: 'playlists' | 'tags' | 'favorites' | 'songs', rotate?: string) => () => (
+        <HeaderRight tabName={tabName} rotate={rotate} />
+    )

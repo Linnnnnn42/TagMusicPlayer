@@ -14,7 +14,7 @@ const defaultStyle = StyleSheet.create({
 
 export const utilsStyles = StyleSheet.create({})
 
-export const songsTabDevStyles = StyleSheet.create({
+export const songsTabStyles = StyleSheet.create({
     container: {
         flex: 1,
         paddingTop: 20,

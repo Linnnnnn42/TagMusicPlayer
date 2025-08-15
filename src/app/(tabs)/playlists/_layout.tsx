@@ -1,7 +1,7 @@
 import { View } from 'react-native'
 import defaultStyle from '@/styles/style'
 import { Stack } from 'expo-router'
-import { StackScreenWithSearchBar } from '@/constants/options'
+import { StackScreenWithSearchBar, getHeaderRight } from '@/constants/options'
 
 export default function PlaylistsTabLayout() {
     return (
@@ -12,6 +12,7 @@ export default function PlaylistsTabLayout() {
                     options={{
                         ...StackScreenWithSearchBar,
                         headerTitle: 'Playlists',
+                        headerRight: getHeaderRight('playlists', '-20deg'),
                     }}
                 />
             </Stack>

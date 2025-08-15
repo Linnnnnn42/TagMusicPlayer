@@ -1,7 +1,7 @@
 import { View } from 'react-native'
 import defaultStyle from '@/styles/style'
 import { Stack } from 'expo-router'
-import { StackScreenWithSearchBar } from '@/constants/options'
+import { StackScreenWithSearchBar, getHeaderRight } from '@/constants/options'
 
 export default function FavoritesTabLayout() {
     return (
@@ -12,6 +12,7 @@ export default function FavoritesTabLayout() {
                     options={{
                         ...StackScreenWithSearchBar,
                         headerTitle: 'Favorites',
+                        headerRight: getHeaderRight('favorites', '-15deg'),
                     }}
                 />
             </Stack>

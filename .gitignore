@@ -39,3 +39,4 @@ yarn-error.*
 # customized
 /.idea/
 /android/
+/backup/
