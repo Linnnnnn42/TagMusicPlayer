@@ -268,11 +268,12 @@ export default class LocalMediaLibrary {
                                 (item: MusicInfo) => ({
                                     id: item.id,
                                     title: item.title,
+                                    filename: item.filename,
                                     artist: item.artist,
                                     cover: item.cover,
                                 }),
                             )
-                            // console.log(newArray[1])
+                            // console.log(minimalMusicInfoList[1])
                             return {
                                 musicInfoList: cachedData.musicInfoList,
                                 minimalMusicInfoList: minimalMusicInfoList,
