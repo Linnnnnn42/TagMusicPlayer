@@ -262,10 +262,20 @@ export default class LocalMediaLibrary {
                         // Check if cache is valid (compare asset count and modification time)
                         if (this.isCacheValid(cachedAssets, realtimeAssets, false)) {
                             console.log('Using cached music library, Loading...')
-                            JSON.parse
                             const cachedData = JSON.parse(cacheFile.text()) // Use the most time when using cache sys
+                            // console.log(cachedData.musicInfoList)
+                            const minimalMusicInfoList = cachedData.musicInfoList.map(
+                                (item: MusicInfo) => ({
+                                    id: item.id,
+                                    title: item.title,
+                                    artist: item.artist,
+                                    cover: item.cover,
+                                }),
+                            )
+                            // console.log(newArray[1])
                             return {
                                 musicInfoList: cachedData.musicInfoList,
+                                minimalMusicInfoList: minimalMusicInfoList,
                                 length: realtimeAssets.length,
                             }
                         }

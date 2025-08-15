@@ -11,6 +11,7 @@ const useGetMediaLibrary = () => {
     const [length, setLength] = useState(0)
     const [loading, setLoading] = useState(true)
     const [musicInfoList, setMusicInfoList] = useState<any[]>([])
+    const [minimalMusicInfoList, setMinimalMusicInfoList] = useState<any[]>([])
     const localMediaLibrary = new LocalMediaLibrary()
 
     useEffect(() => {
@@ -31,10 +32,12 @@ const useGetMediaLibrary = () => {
             }
 
             // Load media library using cache
-            const { musicInfoList, length } = await localMediaLibrary.getMediaLib(true)
+            const { musicInfoList, minimalMusicInfoList, length } =
+                await localMediaLibrary.getMediaLib(true)
             console.log('Get MediaLib successful!!!')
             setMusicInfoList(musicInfoList)
             setLength(length)
+            setMinimalMusicInfoList(minimalMusicInfoList)
         } catch (error) {
             console.error('Failed to load music library:', error)
             Alert.alert('ERROR', 'Failed to load music library')
@@ -51,6 +54,7 @@ const useGetMediaLibrary = () => {
         loading,
         length,
         musicInfoList,
+        minimalMusicInfoList,
         loadMusicLibrary,
     }
 }

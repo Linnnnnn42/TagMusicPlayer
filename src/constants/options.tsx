@@ -20,6 +20,17 @@ export const StackScreenWithSearchBar: NativeStackNavigationOptions = {
 
 // get customized headerRightComponent by tabName
 export const getHeaderRight =
-    (tabName: 'playlists' | 'tags' | 'favorites' | 'songs', rotate?: string) => () => (
-        <HeaderRight tabName={tabName} rotate={rotate} />
+    (
+        tabName: 'playlists' | 'tags' | 'favorites' | 'songs',
+        rotate?: string,
+        translateY?: number,
+        translateX?: number,
+    ) =>
+    () => (
+        <HeaderRight
+            tabName={tabName}
+            rotate={rotate}
+            translateY={translateY}
+            translateX={translateX}
+        />
     )

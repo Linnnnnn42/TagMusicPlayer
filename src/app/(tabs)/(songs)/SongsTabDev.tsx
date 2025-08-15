@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import { Alert, Button, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native'
 import * as MediaLibrary from 'expo-media-library'
 import { songsTabStyles } from '@/styles/style'
-import { getMusicMetadataCommon } from '@/utils/getMediaLibrary'
 import { File } from 'expo-file-system/next'
 
 export default function SongsTabDev() {

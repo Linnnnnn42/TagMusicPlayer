@@ -12,7 +12,7 @@ export default function PlaylistsTabLayout() {
                     options={{
                         ...StackScreenWithSearchBar,
                         headerTitle: 'Playlists',
-                        headerRight: getHeaderRight('playlists', '-20deg'),
+                        headerRight: getHeaderRight('playlists', '-15deg'),
                     }}
                 />
             </Stack>

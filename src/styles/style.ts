@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native'
-import { colors, fontSize } from '@/constants/tokens'
+import { colors, fontSize, fontWeight } from '@/constants/tokens'
 
 const defaultStyle = StyleSheet.create({
     container: {
@@ -29,8 +29,8 @@ export const songsTabStyles = StyleSheet.create({
         borderBottomColor: '#e0e0e0',
     },
     title: {
-        fontSize: 20,
-        fontWeight: 'bold',
+        fontSize: fontSize.sm,
+        fontWeight: fontWeight.bold,
     },
     loadingContainer: {
         flex: 1,

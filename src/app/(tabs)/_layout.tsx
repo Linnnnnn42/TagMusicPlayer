@@ -17,7 +17,7 @@ const TabBarButton = ({
     />
 )
 
-// 定义标签页配置
+// tabBar config
 const tabScreens = [
     {
         name: 'playlists',

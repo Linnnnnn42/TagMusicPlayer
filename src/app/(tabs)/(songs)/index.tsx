@@ -1,16 +1,30 @@
-import { Text, View } from 'react-native'
-import defaultStyle, { songsTabStyles } from '@/styles/style'
+import { View } from 'react-native'
+import defaultStyle from '@/styles/style'
 import { SongsList } from '@/components/SongsList'
-import { SongsHeader } from '@/components/SongsHeader'
-import { useState } from 'react'
+import { useMemo } from 'react'
+import { useNavigationSearch } from '@/hooks/useNavigationSearch'
+import useGetMediaLibrary from '@/hooks/useGetMediaLibrary'
+import { songTitleFilter } from '@/utils/filter'
 
 export default function () {
-    const [onlyMusicDir, setOnlyMusicDir] = useState(true)
+    const search = useNavigationSearch({
+        searchBarOptions: {
+            placeholder: 'Find in songs',
+        },
+    })
+
+    const mediaLibrary = useGetMediaLibrary()
+    const { minimalMusicInfoList } = { ...mediaLibrary }
+
+    const filteredSongs = useMemo(() => {
+        if (!search) return minimalMusicInfoList
+
+        return minimalMusicInfoList.filter(songTitleFilter(search))
+    }, [search, minimalMusicInfoList])
 
     return (
         <View style={defaultStyle.container}>
-            <SongsHeader onlyMusicDir={onlyMusicDir} setOnlyMusicDir={setOnlyMusicDir} />
-            <SongsList />
+            <SongsList mediaLibrary={mediaLibrary} filteredMusicInfoList={filteredSongs} />
         </View>
     )
 }

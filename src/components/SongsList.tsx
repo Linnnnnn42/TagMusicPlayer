@@ -4,11 +4,24 @@ import { SongsListItem } from '@/components/SongsListItem'
 import { colors, fontSize } from '@/constants/tokens'
 import useGetMediaLibrary from '@/hooks/useGetMediaLibrary'
 
-export const SongsList = () => {
-    const { loading, length, musicInfoList, loadMusicLibrary } = useGetMediaLibrary()
+type SongsListProps = {
+    mediaLibrary?: ReturnType<typeof useGetMediaLibrary>
+    filteredMusicInfoList?: any[]
+}
+
+export const SongsList = ({ mediaLibrary, filteredMusicInfoList }: SongsListProps) => {
+    const { loading, length, musicInfoList, minimalMusicInfoList, loadMusicLibrary } = {
+        ...mediaLibrary,
+    }
 
     return (
         <View style={{ flex: 1 }}>
+            <Button
+                title={loading ? `Loading...` : `${length} files found`}
+                onPress={loadMusicLibrary}
+                disabled={loading}
+                color={colors.primary}
+            />
             {loading ? (
                 <View style={songsTabStyles.loadingContainer}>
                     {/*<Text style={{ fontSize: fontSize.medium }}>Loading...</Text>*/}
@@ -19,17 +32,15 @@ export const SongsList = () => {
                 </View>
             ) : (
                 <FlatList
-                    data={musicInfoList}
+                    data={filteredMusicInfoList}
                     renderItem={({ item: song }) => <SongsListItem song={song} />}
                     keyExtractor={(song) => song.id}
+                    contentContainerStyle={{
+                        paddingTop: 10,
+                        paddingBottom: 128,
+                    }}
                 />
             )}
-            <Button
-                title={loading ? `Loading...` : `${length} files found`}
-                onPress={loadMusicLibrary}
-                disabled={loading}
-                color={colors.primary}
-            />
         </View>
     )
 }
