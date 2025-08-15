@@ -1,9 +1,9 @@
-import { View, Text, StyleSheet, Pressable, Alert, ViewProps, Image } from 'react-native'
-import FastImage from '@d11/react-native-fast-image'
+import { View, Text, StyleSheet, Pressable } from 'react-native'
 import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 import { colors, fontSize, fontWeight } from '@/constants/tokens'
 import defaultStyle from '@/styles/style'
 import { useState, memo } from 'react'
+import { Image } from 'expo-image'
 
 export type SongsListItemProps = {
     song: {
@@ -52,8 +52,8 @@ export const SongsListItem = memo(
                 <View style={{ ...styles.songItemContainer }}>
                     <View>
                         {song.cover ? (
-                            <FastImage
-                                source={{ uri: song.cover, priority: FastImage.priority.high }}
+                            <Image
+                                source={{ uri: song.cover }}
                                 style={{ ...styles.songCoverImage }}
                             />
                         ) : (
@@ -92,7 +92,6 @@ export const SongsListItem = memo(
         )
     },
     (prevProps, nextProps) => {
-        // 只有当 song 对象的属性发生变化时才重新渲染
         return (
             prevProps.song.id === nextProps.song.id &&
             prevProps.song.title === nextProps.song.title &&

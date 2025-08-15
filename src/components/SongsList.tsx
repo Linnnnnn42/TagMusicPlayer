@@ -1,9 +1,10 @@
-import { Button, FlatList, Text, View } from 'react-native'
+import { Button, Text, View } from 'react-native'
 import { songsTabStyles } from '@/styles/style'
 import { SongsListItem, SongsListItemProps } from '@/components/SongsListItem'
 import { colors, fontSize } from '@/constants/tokens'
 import useGetMediaLibrary from '@/hooks/useGetMediaLibrary'
 import { useCallback } from 'react'
+import { FlashList } from '@shopify/flash-list'
 
 type SongsListProps = {
     mediaLibrary?: ReturnType<typeof useGetMediaLibrary>
@@ -11,11 +12,14 @@ type SongsListProps = {
 }
 
 export const SongsList = ({ mediaLibrary, filteredMusicInfoList }: SongsListProps) => {
-    const { loading, length, musicInfoList, minimalMusicInfoList, loadMusicLibrary } = {
+    const { loading, length, loadMusicLibrary } = {
         ...mediaLibrary,
     }
 
-    const renderItem = useCallback(({ item: song }: { item: SongsListItemProps['song'] }) => <SongsListItem song={song} />, [])
+    const renderItem = useCallback(
+        ({ item: song }: { item: SongsListItemProps['song'] }) => <SongsListItem song={song} />,
+        [],
+    )
 
     return (
         <View style={{ flex: 1 }}>
@@ -34,7 +38,7 @@ export const SongsList = ({ mediaLibrary, filteredMusicInfoList }: SongsListProp
                     <Text style={{ fontSize: fontSize.medium }}>No files found</Text>
                 </View>
             ) : (
-                <FlatList
+                <FlashList
                     data={filteredMusicInfoList}
                     renderItem={renderItem}
                     keyExtractor={(song) => song.id}
@@ -42,6 +46,8 @@ export const SongsList = ({ mediaLibrary, filteredMusicInfoList }: SongsListProp
                         paddingTop: 10,
                         paddingBottom: 128,
                     }}
+                    estimatedItemSize={66}
+                    removeClippedSubviews={true}
                 />
             )}
         </View>
