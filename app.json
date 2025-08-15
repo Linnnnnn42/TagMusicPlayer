@@ -22,7 +22,7 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.anonymous.musicapp"
+      "package": "com.tag.music.player"
     },
     "web": {
       "favicon": "./src/assets/favicon.png"
