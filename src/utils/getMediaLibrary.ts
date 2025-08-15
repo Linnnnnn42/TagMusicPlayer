@@ -4,9 +4,20 @@ import { IAudioMetadata, IPicture, parseBuffer } from 'music-metadata'
 import { uint8ArrayToBase64 } from 'uint8array-extras'
 import { Asset } from 'expo-media-library'
 
+interface CachedMusicInfo {
+    musicInfoList: MusicInfo[]
+    timestamp: number
+}
+
+interface CachedAssetsInfo {
+    assets: Asset[]
+    cachedOnlyMusicDir: boolean
+    timestamp: number
+}
+
 const hash = require('object-hash')
 
-type MusicInfo = Pick<
+export type MusicInfo = Pick<
     IAudioMetadata['common'],
     'album' | 'artist' | 'artists' | 'title' | 'lyrics' | 'bpm' | 'grouping'
 > & {
@@ -262,8 +273,16 @@ export default class LocalMediaLibrary {
                         // Check if cache is valid (compare asset count and modification time)
                         if (this.isCacheValid(cachedAssets, realtimeAssets, false)) {
                             console.log('Using cached music library, Loading...')
-                            const cachedData = JSON.parse(cacheFile.text()) // Use the most time when using cache sys
-                            // console.log(cachedData.musicInfoList)
+                            // Use type assertion to ensure parsed data type is correct
+                            const cachedData = JSON.parse(cacheFile.text()) as CachedMusicInfo
+
+                            // Verify data structure integrity
+                            if (!cachedData || !cachedData.musicInfoList) {
+                                console.log('Cached data structure invalid')
+                                return undefined
+                            }
+
+                            // Create minimal info list and ensure correct type
                             const minimalMusicInfoList = cachedData.musicInfoList.map(
                                 (item: MusicInfo) => ({
                                     id: item.id,
@@ -273,9 +292,10 @@ export default class LocalMediaLibrary {
                                     cover: item.cover,
                                 }),
                             )
-                            // console.log(minimalMusicInfoList[1])
+
+                            // Return explicitly typed response
                             return {
-                                musicInfoList: cachedData.musicInfoList,
+                                musicInfoList: cachedData.musicInfoList as MusicInfo[],
                                 minimalMusicInfoList: minimalMusicInfoList,
                                 length: realtimeAssets.length,
                             }
@@ -295,13 +315,16 @@ export default class LocalMediaLibrary {
             }
 
             // Cache does not exist or expired, re-fetch music information
-            const musicInfoList = await this.getAllMusicInfo(realtimeAssets)
+            const musicInfoListPromises = await this.getAllMusicInfo(realtimeAssets)
+            const musicInfoList = await Promise.all(musicInfoListPromises)
             const timestamp = Date.now()
-            const cacheData = {
+
+            const cacheData: CachedMusicInfo = {
                 musicInfoList: musicInfoList,
                 timestamp: timestamp,
             }
-            const cacheAssetsData = {
+
+            const cacheAssetsData: CachedAssetsInfo = {
                 assets: realtimeAssets,
                 cachedOnlyMusicDir: onlyMusicDir,
                 timestamp: timestamp,
@@ -317,9 +340,22 @@ export default class LocalMediaLibrary {
 
             cacheFile.write(JSON.stringify(cacheData, null, 4))
             cacheAssetsFile.write(JSON.stringify(cacheAssetsData, null, 4))
+
+            const minimalMusicInfoList = musicInfoList.map((item: MusicInfo) => ({
+                id: item.id,
+                title: item.title,
+                filename: item.filename,
+                artist: item.artist,
+                cover: item.cover,
+            }))
+
             console.log('Music library cache updated')
 
-            return { musicInfoList, length: realtimeAssets.length }
+            return {
+                musicInfoList,
+                minimalMusicInfoList: minimalMusicInfoList,
+                length: realtimeAssets.length,
+            }
         } catch (error) {
             console.error('Error in getMediaLib:', error)
             throw error
