@@ -15,7 +15,7 @@ const useGetMediaLibrary = () => {
     const [minimalMusicInfoList, setMinimalMusicInfoList] = useState<
         {
             id: string
-            title: string | undefined
+            title: string
             filename: string
             artist: string | undefined
             cover: string | undefined

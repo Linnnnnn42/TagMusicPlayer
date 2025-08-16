@@ -295,15 +295,12 @@ export default class LocalMediaLibraryMMKV {
                                     }
 
                                     // Create minimal info list and ensure correct type
-                                    const minimalMusicInfoList = cachedData.musicInfoList.map(
-                                        (item: MusicInfo) => ({
-                                            id: item.id,
-                                            title: item.title,
-                                            filename: item.filename,
-                                            artist: item.artist,
-                                            cover: item.cover,
-                                        }),
+                                    const minimalMusicInfoList = this.createMinimalMusicInfoList(
+                                        cachedData.musicInfoList,
                                     )
+
+                                    console.log(minimalMusicInfoList)
+                                    console.log(cachedData.musicInfoList)
 
                                     // Return explicitly typed response
                                     return {
@@ -348,13 +345,7 @@ export default class LocalMediaLibraryMMKV {
             storage.set(MUSIC_INFO_KEY, JSON.stringify(cacheData))
             storage.set(ASSETS_INFO_KEY, JSON.stringify(cacheAssetsData))
 
-            const minimalMusicInfoList = musicInfoList.map((item: MusicInfo) => ({
-                id: item.id,
-                title: item.title,
-                filename: item.filename,
-                artist: item.artist,
-                cover: item.cover,
-            }))
+            const minimalMusicInfoList = this.createMinimalMusicInfoList(musicInfoList)
 
             console.log('Music library cache updated')
 
@@ -404,6 +395,17 @@ export default class LocalMediaLibraryMMKV {
 
             return true
         }
+    }
+
+    // Helper function to create minimal music info list with title fallback
+    private createMinimalMusicInfoList(musicInfoList: MusicInfo[]) {
+        return musicInfoList.map((item: MusicInfo) => ({
+            id: item.id,
+            title: item.title && item.title.trim() !== '' ? item.title : item.filename,
+            filename: item.filename,
+            artist: item.artist,
+            cover: item.cover,
+        }))
     }
 
     async checkMediaLibraryAvailability() {

@@ -8,8 +8,7 @@ import { Image } from 'expo-image'
 export type SongsListItemProps = {
     song: {
         id: string
-        title?: string
-        filename?: string
+        title: string
         cover?: string
         artist?: string
     }
@@ -78,7 +77,7 @@ export const SongsListItem = memo(
                                 color: isActive ? colors.secondary : colors.text,
                             }}
                         >
-                            {song.title ? song.title : song.filename}
+                            {song.title}
                         </Text>
 
                         {song.artist && (
@@ -95,7 +94,6 @@ export const SongsListItem = memo(
         return (
             prevProps.song.id === nextProps.song.id &&
             prevProps.song.title === nextProps.song.title &&
-            prevProps.song.filename === nextProps.song.filename &&
             prevProps.song.cover === nextProps.song.cover &&
             prevProps.song.artist === nextProps.song.artist
         )

@@ -283,14 +283,8 @@ export default class LocalMediaLibrary {
                             }
 
                             // Create minimal info list and ensure correct type
-                            const minimalMusicInfoList = cachedData.musicInfoList.map(
-                                (item: MusicInfo) => ({
-                                    id: item.id,
-                                    title: item.title,
-                                    filename: item.filename,
-                                    artist: item.artist,
-                                    cover: item.cover,
-                                }),
+                            const minimalMusicInfoList = this.createMinimalMusicInfoList(
+                                cachedData.musicInfoList,
                             )
 
                             // Return explicitly typed response
@@ -341,13 +335,7 @@ export default class LocalMediaLibrary {
             cacheFile.write(JSON.stringify(cacheData, null, 4))
             cacheAssetsFile.write(JSON.stringify(cacheAssetsData, null, 4))
 
-            const minimalMusicInfoList = musicInfoList.map((item: MusicInfo) => ({
-                id: item.id,
-                title: item.title,
-                filename: item.filename,
-                artist: item.artist,
-                cover: item.cover,
-            }))
+            const minimalMusicInfoList = this.createMinimalMusicInfoList(musicInfoList)
 
             console.log('Music library cache updated')
 
@@ -397,6 +385,17 @@ export default class LocalMediaLibrary {
 
             return true
         }
+    }
+
+    // Helper function to create minimal music info list with title fallback
+    private createMinimalMusicInfoList(musicInfoList: MusicInfo[]) {
+        return musicInfoList.map((item: MusicInfo) => ({
+            id: item.id,
+            title: item.title && item.title.trim() !== '' ? item.title : item.filename,
+            filename: item.filename,
+            artist: item.artist,
+            cover: item.cover,
+        }))
     }
 
     async checkMediaLibraryAvailability() {
