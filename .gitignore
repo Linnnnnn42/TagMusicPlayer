@@ -40,3 +40,8 @@ yarn-error.*
 /.idea/
 /android/
 /backup/
+
+# Zip
+*.tar
+*.zip
+*.7z
