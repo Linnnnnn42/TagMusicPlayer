@@ -20,7 +20,7 @@ const RowCheckBox = ({
     const initialFilters = searchFilters.length > 0 ? searchFilters : [items[0]]
 
     // UI
-    const [disableFirst, setDisableFirst] = useState(false)
+    const [disableOne, setDisableOne] = useState(false)
 
     const clampedItems = items.length > 0 ? items.slice(0, 5) : ['Default']
     const handleToggle = (label: string) => {
@@ -34,10 +34,10 @@ const RowCheckBox = ({
 
         // Prevent 1st one to be disabled when newSelection.length === 0
         if (newSelection.length === 0) {
-            newSelection = [...newSelection, items[0]]
-            setDisableFirst(true)
+            newSelection = [...newSelection, label]
+            setDisableOne(true)
         } else {
-            setDisableFirst(false)
+            setDisableOne(false)
         }
 
         onSelectionChange?.(newSelection)
@@ -47,7 +47,7 @@ const RowCheckBox = ({
         <View style={[styles.container, center && styles.centerContainer]}>
             {clampedItems.map((label, index) => {
                 const checked = initialFilters.includes(label)
-                const disabled = disableFirst && index === 0
+                const disabled = disableOne && checked
                 // console.log(index, checked, label)
                 // console.log(initialFilters)
 

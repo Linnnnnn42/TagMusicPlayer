@@ -16,7 +16,7 @@ export default function () {
 
     // Search
     const [searchContent, setSearchContent] = useState('')
-    const [searchFilters, setSearchFilters] = useState<string[]>([])
+    const [searchFilters, setSearchFilters] = useState<string[]>(['Title'])
     const filteredSongs = useMemo(() => {
         if (!searchContent) return minimalMusicInfoList
 
