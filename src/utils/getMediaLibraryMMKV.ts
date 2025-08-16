@@ -4,6 +4,7 @@ import { IAudioMetadata, IPicture, parseBuffer } from 'music-metadata'
 import { uint8ArrayToBase64 } from 'uint8array-extras'
 import { Asset } from 'expo-media-library'
 import { storage } from '@/database/constructor'
+import { keys } from '@/database/keys'
 
 interface CachedMusicInfo {
     musicInfoList: MusicInfo[]
@@ -244,8 +245,8 @@ export default class LocalMediaLibraryMMKV {
 
     async getMediaLib(onlyMusicDir: boolean) {
         // Use MMKV key names instead of file paths
-        const MUSIC_INFO_KEY = 'music_info_cache'
-        const ASSETS_INFO_KEY = 'assets_info_cache'
+        const MUSIC_INFO_KEY = keys.MUSIC_INFO_KEY
+        const ASSETS_INFO_KEY = keys.ASSETS_INFO_KEY
 
         try {
             // Get current media library information
