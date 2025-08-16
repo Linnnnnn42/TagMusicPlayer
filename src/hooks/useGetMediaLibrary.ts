@@ -1,7 +1,7 @@
 import * as MediaLibrary from 'expo-media-library'
 import { useEffect, useState } from 'react'
 import { Alert } from 'react-native'
-import LocalMediaLibrary from '@/utils/getMediaLibrary'
+import LocalMediaLibraryMMKV from '@/utils/getMediaLibraryMMKV'
 import { MusicInfo } from '@/utils/getMediaLibrary'
 
 const useGetMediaLibrary = () => {
@@ -21,7 +21,7 @@ const useGetMediaLibrary = () => {
             cover: string | undefined
         }[]
     >([])
-    const localMediaLibrary = new LocalMediaLibrary()
+    const localMediaLibrary = new LocalMediaLibraryMMKV()
 
     useEffect(() => {
         localMediaLibrary.checkMediaLibraryAvailability().then((r) => {})
