@@ -20,11 +20,11 @@ const TabBarButton = ({
 // tabBar config
 const tabScreens = [
     {
-        name: 'playlists',
+        name: '(playlists)',
         title: 'Playlists',
         icon: {
             name: tabIcons.playlists as keyof typeof MaterialCommunityIcons.glyphMap,
-            size: 24,
+            size: 29,
         },
     },
     {
@@ -32,7 +32,7 @@ const tabScreens = [
         title: 'Tags',
         icon: {
             name: tabIcons.tags as keyof typeof MaterialCommunityIcons.glyphMap,
-            size: 24,
+            size: 28,
         },
     },
     {
@@ -40,11 +40,11 @@ const tabScreens = [
         title: 'Favorites',
         icon: {
             name: tabIcons.favorites as keyof typeof MaterialCommunityIcons.glyphMap,
-            size: 23,
+            size: 26,
         },
     },
     {
-        name: '(songs)',
+        name: 'songs',
         title: 'Songs',
         icon: {
             name: tabIcons.songs as keyof typeof MaterialCommunityIcons.glyphMap,

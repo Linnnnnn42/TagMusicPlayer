@@ -1,5 +1,5 @@
 import { Slot } from 'expo-router'
 
-export default function TagsTabLayout() {
+export default function PlaylistsTabLayout() {
     return <Slot />
 }
