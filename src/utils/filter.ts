@@ -1,7 +1,7 @@
 const searchFilter = (songs: any[], searchContent: string, searchFilters: string[]) => {
     let filteredSongList = [...songs] // Make a copy of the song list
 
-    console.log(searchFilters, searchContent, filteredSongList.length)
+    // console.log(searchFilters, searchContent, filteredSongList.length)
 
     // If content exists
     if (searchContent) {
@@ -34,7 +34,7 @@ export const songArtistFilter = (artistSearched: string) => (song: any) => {
 }
 
 export const songLyricsFilter = (lyricsSearched: string) => (song: any) => {
-    return song.lyrics?.toLowerCase().includes(lyricsSearched.toLowerCase())
+    return song.allLyricsLines?.toLowerCase().includes(lyricsSearched.toLowerCase())
     // Need to remove all timestamps here
 }
 

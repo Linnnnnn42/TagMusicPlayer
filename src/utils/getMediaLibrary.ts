@@ -1,6 +1,6 @@
 import * as MediaLibrary from 'expo-media-library'
 import { Directory, File, Paths } from 'expo-file-system/next'
-import { IAudioMetadata, IPicture, parseBuffer } from 'music-metadata'
+import { IAudioMetadata, ILyricsTag, IPicture, parseBuffer } from 'music-metadata'
 import { uint8ArrayToBase64 } from 'uint8array-extras'
 import { Asset } from 'expo-media-library'
 
@@ -394,7 +394,30 @@ export default class LocalMediaLibrary {
             filename: item.filename,
             artist: item.artist,
             cover: item.cover,
+            lyrics: item.lyrics,
+            allLyricsLines: this.concatAllLyricsLines(item.lyrics?.[0]),
         }))
+    }
+
+    private concatAllLyricsLines(lyrics: ILyricsTag | undefined) {
+        if (lyrics === undefined) {
+            return undefined // Lyrics Not Found
+        } else {
+            if (lyrics.text) {
+                if ([0, 1, 2, 3, 4, 5].includes(lyrics.text.length)) {
+                    return 'Instrumental - 纯音乐'
+                } else {
+                    return lyrics.text
+                }
+            } else {
+                if ([0, 1, 2, 3, 4, 5].includes(lyrics.syncText.length)) {
+                    return 'Instrumental - 纯音乐'
+                } else {
+                    const result = lyrics.syncText.map((item) => item.text).join(' ')
+                    return result
+                }
+            }
+        }
     }
 
     async checkMediaLibraryAvailability() {

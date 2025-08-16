@@ -48,8 +48,8 @@ const RowCheckBox = ({
             {clampedItems.map((label, index) => {
                 const checked = initialFilters.includes(label)
                 const disabled = disableFirst && index === 0
-                console.log(index, checked, label)
-                console.log(initialFilters)
+                // console.log(index, checked, label)
+                // console.log(initialFilters)
 
                 return (
                     <View key={index} style={styles.checkboxContainer}>
