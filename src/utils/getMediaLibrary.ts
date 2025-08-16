@@ -370,7 +370,6 @@ export default class LocalMediaLibrary {
 
             // Check asset modification time
             for (let i = 0; i < realtimeAssets.length; i++) {
-                // console.log(i)
                 const cachedAsset = cachedAssets[i]
                 const realtimeAsset = realtimeAssets[i]
 

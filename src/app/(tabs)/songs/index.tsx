@@ -4,7 +4,7 @@ import { SongsList } from '@/components/SongsList'
 import { useMemo, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import useGetMediaLibrary from '@/hooks/useGetMediaLibrary'
-import { songTitleFilter } from '@/utils/filter'
+import searchFilter from '@/utils/filter'
 import { colors } from '@/constants/tokens'
 import FloatingSearchBar from '@/components/FloatingSearchBar/FloatingSearchBar'
 import SearchButton from '@/components/FloatingSearchBar/SearchButton'
@@ -16,11 +16,12 @@ export default function () {
 
     // Search
     const [searchContent, setSearchContent] = useState('')
+    const [searchFilters, setSearchFilters] = useState<string[]>([])
     const filteredSongs = useMemo(() => {
         if (!searchContent) return minimalMusicInfoList
 
-        return minimalMusicInfoList.filter(songTitleFilter(searchContent))
-    }, [searchContent, minimalMusicInfoList])
+        return searchFilter(minimalMusicInfoList, searchContent, searchFilters)
+    }, [searchContent, minimalMusicInfoList, searchFilters])
 
     // UI
     const [visible, setVisible] = useState(false)
@@ -36,10 +37,16 @@ export default function () {
                 }}
             >
                 <View style={{ backgroundColor: '#fff', height: '100%' }}>
-                    <FloatingSearchBar visible={visible} onSearchChange={setSearchContent} />
+                    <FloatingSearchBar
+                        visible={visible}
+                        searchContent={searchContent}
+                        onSearchChange={setSearchContent}
+                        searchFilters={searchFilters}
+                        onSelectionChange={setSearchFilters}
+                    />
                     <SearchButton visible={visible} onPress={setVisible} />
-                    <SongsList 
-                        mediaLibrary={mediaLibrary} 
+                    <SongsList
+                        mediaLibrary={mediaLibrary}
                         filteredMusicInfoList={filteredSongs}
                         visible={visible}
                     />

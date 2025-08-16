@@ -8,30 +8,26 @@ import * as React from 'react'
 type FloatingSearchBarProps = {
     visible?: boolean
     hideOffset?: number
+    searchContent?: string
     onSearchChange?: (text: string) => void
+    searchFilters?: string[]
+    onSelectionChange?: (selections: string[]) => void
     ref?: React.Ref<{ focus: () => void }>
 }
 
-const FloatingSearchBar = ({ 
-    visible = true, 
-    hideOffset = -300, 
+const FloatingSearchBar = ({
+    visible = true,
+    hideOffset = -300,
+    searchContent = '',
     onSearchChange,
-    ref 
+    searchFilters,
+    onSelectionChange,
+    ref,
 }: FloatingSearchBarProps) => {
-    const [searchQuery, setSearchQuery] = useState('')
+    // UI / Animation
     const animatedValue = useRef(new Animated.Value(visible ? 1 : 0)).current
     const [visibility, setVisibility] = useState(visible)
     const searchbarRef = useRef<any>(null)
-
-    const handleSelectionChange = (selectedItem: string[]) => {
-        console.log(selectedItem)
-    }
-
-    const handleSearchQueryChange = (text: string) => {
-        setSearchQuery(text)
-        onSearchChange?.(text)
-    }
-
     React.useImperativeHandle(ref, () => ({
         focus: () => {
             setTimeout(() => {
@@ -100,17 +96,18 @@ const FloatingSearchBar = ({
                     <View style={{ width: '100%' }}>
                         <Searchbar
                             ref={searchbarRef}
-                            value={searchQuery}
+                            value={searchContent}
                             placeholder={'Find in songs'}
                             searchAccessibilityLabel={'Find in songs'}
                             mode={'bar'}
-                            onChangeText={handleSearchQueryChange}
+                            onChangeText={onSearchChange}
                             theme={{ colors: { onSurfaceVariant: 'black' } }}
                         />
                         <RowCheckBox
                             items={['Title', 'Artist', 'Lyrics']}
                             center={true}
-                            onSelectionChange={handleSelectionChange}
+                            searchFilters={searchFilters}
+                            onSelectionChange={onSelectionChange}
                         />
                     </View>
                 </Surface>

@@ -1,68 +1,77 @@
 import { colors } from '@/constants/tokens'
 import { Checkbox } from 'react-native-paper'
-import { useState, useEffect } from 'react'
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
-
-interface CheckboxItem {
-    label: string
-    checked: boolean
-}
+import { useEffect, useState } from 'react'
+import searchFilter from '@/utils/filter'
 
 interface RowCheckboxProps {
     items?: string[]
     center?: boolean
+    searchFilters?: string[]
     onSelectionChange?: (selectedItems: string[]) => void
 }
 
 const RowCheckBox = ({
     items = ['Default'],
     center = false,
+    searchFilters = [],
     onSelectionChange,
 }: RowCheckboxProps) => {
+    const initialFilters = searchFilters.length > 0 ? searchFilters : [items[0]]
+
+    // UI
+    const [disableFirst, setDisableFirst] = useState(false)
+
     const clampedItems = items.length > 0 ? items.slice(0, 5) : ['Default']
-
-    const initialCheckboxes: CheckboxItem[] = clampedItems.map((label) => ({
-        label,
-        checked: false,
-    }))
-
-    const [checkboxes, setCheckboxes] = useState<CheckboxItem[]>(initialCheckboxes)
-
-    useEffect(() => {
-        if (onSelectionChange) {
-            const selectedItems = checkboxes
-                .filter((checkbox) => checkbox.checked)
-                .map((checkbox) => checkbox.label)
-            onSelectionChange(selectedItems)
+    const handleToggle = (label: string) => {
+        let newSelection
+        // Normal Checkbox Logic
+        if (initialFilters.includes(label)) {
+            newSelection = initialFilters.filter((item) => item !== label)
+        } else {
+            newSelection = [...initialFilters, label]
         }
-    }, [checkboxes, onSelectionChange])
 
-    const toggleCheckbox = (index: number) => {
-        setCheckboxes((prev) =>
-            prev.map((checkbox, i) =>
-                i === index ? { ...checkbox, checked: !checkbox.checked } : checkbox,
-            ),
-        )
+        // Prevent 1st one to be disabled when newSelection.length === 0
+        if (newSelection.length === 0) {
+            newSelection = [...newSelection, items[0]]
+            setDisableFirst(true)
+        } else {
+            setDisableFirst(false)
+        }
+
+        onSelectionChange?.(newSelection)
     }
 
     return (
         <View style={[styles.container, center && styles.centerContainer]}>
-            {checkboxes.map((checkbox, index) => (
-                <View key={index} style={styles.checkboxContainer}>
-                    <TouchableOpacity
-                        style={styles.checkboxWrapper}
-                        onPress={() => toggleCheckbox(index)}
-                        activeOpacity={0.3}
-                    >
-                        <Checkbox
-                            status={checkbox.checked ? 'checked' : 'unchecked'}
-                            color={colors.primary}
-                            onPress={() => toggleCheckbox(index)}
-                        />
-                        <Text style={styles.label}>{checkbox.label}</Text>
-                    </TouchableOpacity>
-                </View>
-            ))}
+            {clampedItems.map((label, index) => {
+                const checked = initialFilters.includes(label)
+                const disabled = disableFirst && index === 0
+                console.log(index, checked, label)
+                console.log(initialFilters)
+
+                return (
+                    <View key={index} style={styles.checkboxContainer}>
+                        <TouchableOpacity
+                            style={styles.checkboxWrapper}
+                            onPress={() => handleToggle(label)}
+                            activeOpacity={0.7}
+                            disabled={disabled}
+                        >
+                            <Checkbox
+                                status={checked ? 'checked' : 'unchecked'}
+                                color={colors.primary}
+                                onPress={() => handleToggle(label)}
+                                disabled={disabled}
+                            />
+                            <Text style={[styles.label, disabled && styles.disabledLabel]}>
+                                {label}
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
+                )
+            })}
         </View>
     )
 }
@@ -84,7 +93,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     label: {
-        color: colors.primary,
+        marginLeft: 5,
+        color: colors.text,
+    },
+    disabledLabel: {
+        color: colors.textMuted,
     },
 })
 

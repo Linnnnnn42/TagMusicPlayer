@@ -300,9 +300,6 @@ export default class LocalMediaLibraryMMKV {
                                         cachedData.musicInfoList,
                                     )
 
-                                    console.log(minimalMusicInfoList)
-                                    console.log(cachedData.musicInfoList)
-
                                     // Return explicitly typed response
                                     return {
                                         musicInfoList: cachedData.musicInfoList as MusicInfo[],
