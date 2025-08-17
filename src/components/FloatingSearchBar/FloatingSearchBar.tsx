@@ -35,6 +35,12 @@ const FloatingSearchBar = ({
             }, 100) // Delay to ensure animation completion
         },
     }))
+    const translateYValue = React.useMemo(() => {
+        return animatedValue.interpolate({
+            inputRange: [0, 1],
+            outputRange: [hideOffset, 0],
+        })
+    }, [animatedValue, hideOffset])
 
     useEffect(() => {
         if (visible) {
@@ -83,10 +89,7 @@ const FloatingSearchBar = ({
                         alignItems: 'center',
                         transform: [
                             {
-                                translateY: animatedValue.interpolate({
-                                    inputRange: [0, 1],
-                                    outputRange: [hideOffset, 0],
-                                }),
+                                translateY: translateYValue,
                             },
                         ],
                     },
