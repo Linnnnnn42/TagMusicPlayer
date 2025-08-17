@@ -5,7 +5,6 @@ import { colors } from '@/constants/tokens'
 import TabHeader from '@/components/TabHeader'
 import FloatingSearchBar from '@/components/FloatingSearchBar/FloatingSearchBar'
 import { useState } from 'react'
-import { StyleSheet } from 'react-native'
 import SearchButton from '@/components/FloatingSearchBar/SearchButton'
 
 export default function PlaylistsTab() {
@@ -35,17 +34,3 @@ export default function PlaylistsTab() {
         </View>
     )
 }
-
-const styles = StyleSheet.create({
-    button: {
-        width: 60,
-        height: 60,
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderRadius: 100,
-        backgroundColor: colors.primary,
-        position: 'absolute',
-        bottom: 20,
-        right: 20,
-    },
-})

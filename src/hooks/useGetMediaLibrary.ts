@@ -1,8 +1,7 @@
 import * as MediaLibrary from 'expo-media-library'
 import { useEffect, useState } from 'react'
 import { Alert } from 'react-native'
-import LocalMediaLibraryMMKV from '@/utils/getMediaLibraryMMKV'
-import { MusicInfo } from '@/utils/getMediaLibrary'
+import LocalMediaLibraryMMKV, { MinimalMusicInfo, MusicInfo } from '@/utils/getMediaLibraryMMKV'
 
 const useGetMediaLibrary = () => {
     const [permissionResponse, requestPermission] = MediaLibrary.usePermissions({
@@ -12,15 +11,7 @@ const useGetMediaLibrary = () => {
     const [length, setLength] = useState(0)
     const [loading, setLoading] = useState(true)
     const [musicInfoList, setMusicInfoList] = useState<MusicInfo[]>([])
-    const [minimalMusicInfoList, setMinimalMusicInfoList] = useState<
-        {
-            id: string
-            title: string
-            filename: string
-            artist: string | undefined
-            cover: string | undefined
-        }[]
-    >([])
+    const [minimalMusicInfoList, setMinimalMusicInfoList] = useState<MinimalMusicInfo[]>([])
     const localMediaLibrary = new LocalMediaLibraryMMKV()
 
     useEffect(() => {

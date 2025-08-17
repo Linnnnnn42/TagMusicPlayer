@@ -33,6 +33,16 @@ export type MusicInfo = Pick<
     cover: string | undefined
 }
 
+export interface MinimalMusicInfo {
+    id: string
+    title: string
+    filename: string
+    artist: string | undefined
+    cover: string | undefined
+    lyrics: ILyricsTag[] | undefined
+    allLyricsLines: string | undefined
+}
+
 export default class LocalMediaLibraryMMKV {
     constructor() {}
 
@@ -396,7 +406,7 @@ export default class LocalMediaLibraryMMKV {
     }
 
     // Helper function to create minimal music info list with title fallback
-    private createMinimalMusicInfoList(musicInfoList: MusicInfo[]) {
+    private createMinimalMusicInfoList(musicInfoList: MusicInfo[]): MinimalMusicInfo[] {
         return musicInfoList.map((item: MusicInfo) => ({
             id: item.id,
             title: item.title && item.title.trim() !== '' ? item.title : item.filename,
