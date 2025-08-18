@@ -58,7 +58,7 @@ const tabScreens = [
 export default function TabsLayout() {
     // Get global context
     const { musicPlayer } = useGlobalMusicPlayer()
-    const { songInfoPlaying } = musicPlayer
+    const { songInfoPlaying, playerStatus, player } = musicPlayer
 
     return (
         <>
@@ -94,7 +94,11 @@ export default function TabsLayout() {
                     />
                 ))}
             </Tabs>
-            <FloatingPlayer songInfo={songInfoPlaying} />
+            <FloatingPlayer
+                songInfo={songInfoPlaying}
+                playerStatus={playerStatus}
+                player={player}
+            />
         </>
     )
 }

@@ -87,8 +87,8 @@ export const SongsList = ({
                                 </View>
                             }
                             ItemSeparatorComponent={Divider}
-                            ListHeaderComponent={Divider}
-                            ListFooterComponent={Divider}
+                            // ListHeaderComponent={Divider}
+                            // ListFooterComponent={Divider}
                         />
                     </Animated.View>
                 </View>

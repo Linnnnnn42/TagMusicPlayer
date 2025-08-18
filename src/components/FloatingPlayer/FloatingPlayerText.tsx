@@ -5,26 +5,30 @@ import * as React from 'react'
 import { MinimalMusicInfo } from '@/utils/getMediaLibraryMMKV'
 
 type FloatingPlayerTextProps = {
-    songInfoText?: Pick<MinimalMusicInfo, 'title' | 'artist' | 'lyrics'>
+    songInfoText?: Pick<MinimalMusicInfo, 'title' | 'lyrics'>
+    currentLyric?: string
 }
 
-export const FloatingPlayerText = ({ songInfoText }: FloatingPlayerTextProps) => {
+export const FloatingPlayerText = ({ songInfoText, currentLyric }: FloatingPlayerTextProps) => {
     return (
-        <>
-            <View
-                style={{
-                    height: '25%',
-                    justifyContent: 'center',
-                    marginTop: 10,
-                    // backgroundColor: colors.text,
-                }}
-            >
+        <View
+            style={{
+                // backgroundColor: colors.text,
+                flexDirection: 'column',
+                width: '55%',
+                alignContent: 'center',
+                alignSelf: 'center',
+                justifyContent: 'center',
+                alignItems: 'center',
+            }}
+        >
+            <View>
                 <TextTicker
                     style={{
                         fontSize: 15,
                         fontWeight: fontWeight.bold,
                         color: colors.text,
-                        textAlign: 'left',
+                        textAlign: 'center',
                     }}
                     duration={10000}
                     animationType={'scroll'}
@@ -32,24 +36,17 @@ export const FloatingPlayerText = ({ songInfoText }: FloatingPlayerTextProps) =>
                     bounce={false}
                     scroll={false}
                 >
-                    {songInfoText
-                        ? `${songInfoText.title || '未知标题'} - ${songInfoText.artist || '佚名'}`
-                        : 'Unknown'}
+                    {songInfoText ? `${songInfoText.title || '未知标题'}` : 'Unknown'}
                 </TextTicker>
             </View>
-            <View
-                style={{
-                    height: '25%',
-                    justifyContent: 'flex-start',
-                    // backgroundColor: colors.text,
-                }}
-            >
+            <View>
                 <TextTicker
                     style={{
                         fontSize: 10,
                         fontWeight: fontWeight.bold,
-                        paddingTop: 5,
+                        paddingTop: 4,
                         color: colors.textMuted,
+                        textAlign: 'center',
                     }}
                     duration={10000}
                     animationType={'scroll'}
@@ -57,9 +54,9 @@ export const FloatingPlayerText = ({ songInfoText }: FloatingPlayerTextProps) =>
                     bounce={false}
                     scroll={false}
                 >
-                    I'm rooooooooooooooolling lyrics... Is it?
+                    {currentLyric}
                 </TextTicker>
             </View>
-        </>
+        </View>
     )
 }

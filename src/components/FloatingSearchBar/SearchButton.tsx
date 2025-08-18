@@ -10,7 +10,7 @@ type SearchButtonProps = {
     onPress: (visible: boolean) => void
 }
 
-const SearchButton = ({ visible, bottom = 130, onPress }: SearchButtonProps) => {
+const SearchButton = ({ visible, bottom = 100, onPress }: SearchButtonProps) => {
     return (
         <FAB
             icon={'magnify'}

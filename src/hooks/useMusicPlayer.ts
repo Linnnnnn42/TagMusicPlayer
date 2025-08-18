@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { MinimalMusicInfo } from '@/utils/getMediaLibraryMMKV'
-import { useAudioPlayer } from 'expo-audio'
+import { useAudioPlayer, useAudioPlayerStatus } from 'expo-audio'
 import useGetMediaLibrary from '@/hooks/useGetMediaLibrary'
 import { GlobalMusicPlayerContextType } from '@/app/_layout'
 
@@ -9,7 +9,7 @@ const useMusicPlayer = (mediaLibrary: GlobalMusicPlayerContextType['mediaLibrary
     // const mediaLibrary = useGetMediaLibrary()
     const { minimalMusicInfoList } = { ...mediaLibrary }
 
-    // Player
+    // song playing
     const [songInfoPlaying, setSongInfoPlaying] = useState<MinimalMusicInfo>({
         id: '',
         title: '',
@@ -28,15 +28,22 @@ const useMusicPlayer = (mediaLibrary: GlobalMusicPlayerContextType['mediaLibrary
             setSongInfoPlaying(minimalSongInfo)
         }
     }
+
+    // player
     const player = useAudioPlayer(songInfoPlaying.uri)
     useEffect(() => {
         player.play()
     }, [songInfoPlaying])
 
+    // player status
+    const playerStatus = useAudioPlayerStatus(player)
+
     return {
         songIdPlaying,
         songInfoPlaying,
         handleSongChange,
+        playerStatus,
+        player,
     }
 }
 
