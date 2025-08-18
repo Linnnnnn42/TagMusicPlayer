@@ -10,8 +10,8 @@
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\" \"!prisma/generated/**\""
   },
   "dependencies": {
-    "@shopify/flash-list": "1.7.6",
     "expo": "~53.0.20",
+    "expo-audio": "~0.4.8",
     "expo-constants": "~17.1.7",
     "expo-dev-client": "~5.2.4",
     "expo-file-system": "~18.1.11",
@@ -21,7 +21,6 @@
     "expo-media-library": "~17.1.7",
     "expo-router": "~5.1.4",
     "expo-status-bar": "~2.2.3",
-    "flatted": "^3.3.3",
     "music-metadata": "^11.8.2",
     "object-hash": "^3.0.0",
     "react": "19.0.0",
@@ -30,7 +29,7 @@
     "react-native-paper": "^5.14.5",
     "react-native-safe-area-context": "5.4.0",
     "react-native-screens": "~4.11.1",
-    "expo-audio": "~0.4.8"
+    "react-native-text-ticker": "^1.15.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
