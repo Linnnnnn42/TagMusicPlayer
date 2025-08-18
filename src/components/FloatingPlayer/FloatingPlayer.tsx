@@ -1,54 +1,57 @@
-import { colors, fontWeight } from '@/constants/tokens'
-import { Searchbar, Surface } from 'react-native-paper'
+import { colors } from '@/constants/tokens'
+import { ProgressBar, Searchbar, Surface } from 'react-native-paper'
 import { View, Text, StyleSheet, Animated } from 'react-native'
-import TextTicker from 'react-native-text-ticker'
-import * as React from 'react'
 import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 import { MinimalMusicInfo } from '@/utils/getMediaLibraryMMKV'
-import { Ionicons } from '@expo/vector-icons'
+import { PlayerControls } from '@/components/FloatingPlayer/FloatingPlayerControls'
+import { FloatingPlayerText } from '@/components/FloatingPlayer/FloatingPlayerText'
+import { Image } from 'expo-image'
+import { useEffect } from 'react'
 
-type FloatingSearchBarProps = {
+type FloatingPlayerProps = {
     songInfo?: MinimalMusicInfo
     onSongChange?: (text: string) => void
 }
 
-const FloatingPlayer = ({ songInfo, onSongChange }: FloatingSearchBarProps) => {
-    if (songInfo) return null
+const FloatingPlayer = ({ songInfo, onSongChange }: FloatingPlayerProps) => {
+    if (!songInfo) return null
+
+    useEffect(() => {
+        console.log(songInfo)
+        console.log('Hi from floating player!')
+    }, [songInfo])
 
     return (
         <View
             style={{
-                flexDirection: 'row',
+                flexDirection: 'column',
                 justifyContent: 'center',
                 alignItems: 'center',
                 // alignSelf: 'center',
                 position: 'absolute',
-                bottom: 75,
+                bottom: 70,
                 left: 0,
-                height: 100,
+                height: 110,
                 width: '100%',
                 // backgroundColor: colors.text,
-
-                zIndex: 2,
             }}
         >
             <Surface style={styles.surface} elevation={4} mode={'elevated'}>
-                <MaterialIcons
-                    name="art-track"
-                    size={95}
-                    style={{
-                        color: colors.textMutedOpacity90Light,
-                        backgroundColor: colors.textMutedOpacity30Light,
-                        textAlign: 'center',
-                        textAlignVertical: 'center',
-                        borderRadius: 8,
-                        width: 120,
-                        height: 120,
-                        left: '0%',
-                        top: -20,
-                        elevation: 10,
-                    }}
-                />
+                {songInfo.cover ? (
+                    <Image source={{ uri: songInfo.cover }} style={{ ...styles.songCoverImage }} />
+                ) : (
+                    <MaterialIcons
+                        name="art-track"
+                        size={95}
+                        style={{
+                            color: colors.textMutedOpacity90Light,
+                            backgroundColor: colors.textMutedOpacity30Light,
+                            textAlign: 'center',
+                            textAlignVertical: 'center',
+                            ...styles.songCoverImage,
+                        }}
+                    />
+                )}
                 <View
                     style={{
                         flexDirection: 'column',
@@ -59,112 +62,24 @@ const FloatingPlayer = ({ songInfo, onSongChange }: FloatingSearchBarProps) => {
                         alignItems: 'center',
                     }}
                 >
-                    <View
-                        style={{
-                            height: '25%',
-                            justifyContent: 'center',
-                            marginTop: 10,
-                            // backgroundColor: colors.text,
-                        }}
-                    >
-                        <TextTicker
-                            style={{
-                                fontSize: 15,
-                                fontWeight: fontWeight.bold,
-                                color: colors.text,
-                                textAlign: 'left',
-                            }}
-                            duration={10000}
-                            animationType={'scroll'}
-                            loop={true}
-                            bounce={false}
-                            scroll={false}
-                        >
-                            This is a song.
-                        </TextTicker>
-                    </View>
-                    <View
-                        style={{
-                            height: '30%',
-                            justifyContent: 'flex-start',
-                            // backgroundColor: colors.text,
-                        }}
-                    >
-                        <TextTicker
-                            style={{
-                                fontSize: 10,
-                                fontWeight: fontWeight.bold,
-                                paddingTop: 5,
-                                color: colors.textMuted,
-                            }}
-                            duration={10000}
-                            animationType={'scroll'}
-                            loop={true}
-                            bounce={false}
-                            scroll={false}
-                        >
-                            I'm rooooooooooooooolling lyrics... Is it?
-                        </TextTicker>
-                    </View>
-                    <View
-                        style={{
-                            height: '30%',
-                            flexDirection: 'row',
-                            paddingBottom: 5,
-                            // justifyContent: 'flex-start',
-                            // backgroundColor: colors.text,
-                        }}
-                    >
-                        <Ionicons
-                            name="play-back"
-                            size={20}
-                            style={{
-                                color: colors.text,
-                                // backgroundColor: colors.textMutedOpacity30Light,
-                                position: 'relative',
-                                textAlign: 'center',
-                                textAlignVertical: 'center',
-                                borderRadius: 8,
-                                // width: 30,
-                                // height: 30,
-                                left: -29,
-                                // top: 64,
-                                elevation: 0,
-                            }}
-                        />
-                        <Ionicons
-                            name="play"
-                            size={20}
-                            style={{
-                                color: colors.text,
-                                // backgroundColor: colors.textMutedOpacity30Light,
-                                position: 'relative',
-                                textAlign: 'center',
-                                textAlignVertical: 'center',
-                                borderRadius: 8,
-                                elevation: 0,
-                            }}
-                        />
-                        <Ionicons
-                            name="play-forward"
-                            size={20}
-                            style={{
-                                color: colors.text,
-                                // backgroundColor: colors.textMutedOpacity30Light,
-                                position: 'relative',
-                                textAlign: 'center',
-                                textAlignVertical: 'center',
-                                borderRadius: 8,
-                                // width: 30,
-                                // height: 30,
-                                left: 25,
-                                // top: 64,
-                                elevation: 0,
-                            }}
-                        />
-                    </View>
+                    <FloatingPlayerText songInfoText={songInfo} />
+                    <PlayerControls />
                 </View>
             </Surface>
+            <ProgressBar
+                progress={0.1}
+                style={{
+                    borderRadius: 1000,
+                    position: 'absolute',
+                    height: 5,
+                    width: '80%',
+                    right: '-40%',
+                    top: -5,
+                }}
+                theme={{
+                    colors: { primary: 'red', surfaceVariant: colors.secondaryOpacity30 },
+                }}
+            />
         </View>
     )
 }
@@ -180,4 +95,12 @@ const styles = StyleSheet.create({
         borderRadius: 20,
     },
     textTicker: {},
+    songCoverImage: {
+        borderRadius: 8,
+        width: 120,
+        height: 120,
+        left: '0%',
+        bottom: 15,
+        elevation: 10,
+    },
 })

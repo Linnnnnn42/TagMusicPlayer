@@ -1,53 +1,25 @@
 import { View } from 'react-native'
 import defaultStyle from '@/styles/style'
 import { SongsList } from '@/components/SongsTab/SongsList'
-import { useEffect, useMemo, useState } from 'react'
+import { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import useGetMediaLibrary from '@/hooks/useGetMediaLibrary'
-import searchFilter from '@/utils/filter'
 import { colors } from '@/constants/tokens'
 import FloatingSearchBar from '@/components/FloatingSearchBar/FloatingSearchBar'
 import SearchButton from '@/components/FloatingSearchBar/SearchButton'
-import { MinimalMusicInfo } from '@/utils/getMediaLibraryMMKV'
-import { useAudioPlayer } from 'expo-audio'
+import useSongsSearch from '@/hooks/useSongsSearch'
+import useGlobalMusicPlayer from '@/hooks/useGlobalMusicPlayer'
 
 export default function () {
-    // Get Data
-    const mediaLibrary = useGetMediaLibrary()
-    const { minimalMusicInfoList } = { ...mediaLibrary }
+    // Get global context
+    const { musicPlayer, mediaLibrary } = useGlobalMusicPlayer()
 
     // Search
-    const [searchContent, setSearchContent] = useState('')
-    const [searchFilters, setSearchFilters] = useState<string[]>(['Title'])
-    const filteredSongs = useMemo(() => {
-        if (!searchContent) return minimalMusicInfoList
-
-        return searchFilter(minimalMusicInfoList, searchContent, searchFilters)
-    }, [searchContent, minimalMusicInfoList, searchFilters])
+    const songsSearch = useSongsSearch(mediaLibrary)
+    const { searchContent, setSearchContent, searchFilters, setSearchFilters, filteredSongs } =
+        songsSearch
 
     // Player
-    const [songInfoPlaying, setSongInfoPlaying] = useState<MinimalMusicInfo>({
-        id: '',
-        title: '',
-        artist: undefined,
-        cover: undefined,
-        lyrics: undefined,
-        allLyricsLines: undefined,
-        filename: '',
-        uri: '',
-    })
-    const [songIdPlaying, setSongIdPlaying] = useState<string>('')
-    const handleSongChange = (songId: string) => {
-        setSongIdPlaying(songId)
-        const minimalSongInfo = minimalMusicInfoList.find((song) => song.id === songId)
-        if (minimalSongInfo) {
-            setSongInfoPlaying(minimalSongInfo)
-        }
-    }
-    const player = useAudioPlayer(songInfoPlaying.uri)
-    useEffect(() => {
-        player.play()
-    }, [songInfoPlaying])
+    const { songIdPlaying, handleSongChange } = musicPlayer
 
     // UI
     const [isSearchBarVisible, setIsSearchBarVisible] = useState(false)

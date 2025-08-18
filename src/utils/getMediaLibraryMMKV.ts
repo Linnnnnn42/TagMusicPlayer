@@ -414,7 +414,7 @@ export default class LocalMediaLibraryMMKV {
         return musicInfoList.map((item: MusicInfo) => ({
             id: item.id,
             title: item.title && item.title.trim() !== '' ? item.title : item.filename,
-            artist: item.artist,
+            artist: item.artist && item.artist.trim() !== '' ? item.artist : '佚名',
             cover: item.cover,
             lyrics: item.lyrics,
             allLyricsLines: this.concatAllLyricsLines(item.lyrics?.[0]),
