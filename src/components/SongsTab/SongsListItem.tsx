@@ -2,7 +2,7 @@ import { View, Text, StyleSheet, Pressable } from 'react-native'
 import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 import { colors, fontSize, fontWeight } from '@/constants/tokens'
 import defaultStyle from '@/styles/style'
-import { useState, memo } from 'react'
+import { useState, memo, useEffect } from 'react'
 import { Image } from 'expo-image'
 
 export type SongsListItemProps = {
@@ -12,31 +12,30 @@ export type SongsListItemProps = {
         cover?: string
         artist?: string
     }
+    songIdPlaying?: string
+    onSongChange?: (songId: string) => void
 }
 
 export const SongsListItem = memo(
-    ({ song }: SongsListItemProps) => {
+    ({ song, songIdPlaying, onSongChange }: SongsListItemProps) => {
         const [isActive, setActive] = useState(false)
 
-        const onPressIn = () => {
-            setActive(true)
-        }
+        useEffect(() => {
+            setActive(songIdPlaying === song.id)
+        }, [songIdPlaying, song.id])
 
-        const onPressOut = () => {
-            setTimeout(() => {
-                setActive(false)
-            }, 0)
-        }
+        // const isActive = songIdPlaying === song.id
 
         const onPress = () => {
-            setActive(!isActive)
+            // setActive(!isActive)
+            onSongChange?.(song.id)
         }
 
         return (
             <Pressable
                 style={{
-                    paddingVertical: 8,
-                    paddingHorizontal: 11,
+                    paddingVertical: 15,
+                    paddingLeft: '5%',
                     backgroundColor: isActive ? colors.primaryOpacity10 : colors.background,
                 }}
                 android_ripple={{
@@ -44,8 +43,6 @@ export const SongsListItem = memo(
                     borderless: false,
                     foreground: true,
                 }}
-                // onPressIn={onPressIn}
-                // onPressOut={onPressOut}
                 onPress={onPress}
             >
                 <View style={{ ...styles.songItemContainer }}>
@@ -60,18 +57,19 @@ export const SongsListItem = memo(
                                 name="art-track"
                                 size={40}
                                 style={{
-                                    color: colors.textMuted + '90',
-                                    backgroundColor: colors.textMuted + '30',
-                                    padding: 4,
+                                    color: colors.textMutedOpacity90Light,
+                                    backgroundColor: colors.textMutedOpacity30Light,
+                                    textAlign: 'center',
+                                    textAlignVertical: 'center',
                                     ...styles.songCoverImage,
                                 }}
                             />
                         )}
                     </View>
 
-                    <View style={{ width: '100%' }}>
+                    <View style={{ width: '70%' }}>
                         <Text
-                            numberOfLines={1}
+                            numberOfLines={2}
                             style={{
                                 ...styles.songTitleText,
                                 color: isActive ? colors.secondary : colors.text,
@@ -95,7 +93,8 @@ export const SongsListItem = memo(
             prevProps.song.id === nextProps.song.id &&
             prevProps.song.title === nextProps.song.title &&
             prevProps.song.cover === nextProps.song.cover &&
-            prevProps.song.artist === nextProps.song.artist
+            prevProps.song.artist === nextProps.song.artist &&
+            prevProps.songIdPlaying === nextProps.songIdPlaying
         )
     },
 )
@@ -105,7 +104,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         columnGap: 14,
         alignItems: 'center',
-        paddingRight: 20,
+        // paddingRight: 20,
     },
     songCoverImage: {
         borderRadius: 8,

@@ -14,6 +14,8 @@ export const colors = {
     background: '#fff',
     text: '#000',
     textMuted: '#707070',
+    textMutedOpacity30Light: '#e3e3e3',
+    textMutedOpacity90Light: '#a2a2a2',
     icon: '#fff',
 }
 
@@ -30,6 +32,11 @@ export const fontSize: { [key: string]: number } = {
 export const fontWeight: { [key: string]: TextStyle['fontWeight'] } = {
     normal: 'normal',
     bold: 'bold',
+    oneHundred: '100',
+    twoHundred: '200',
+    threeHundred: '300',
+    fourHundred: '400',
+    fiveHundred: '500',
     sixHundred: '600',
 }
 

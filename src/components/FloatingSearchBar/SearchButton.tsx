@@ -6,17 +6,19 @@ import { StyleSheet } from 'react-native'
 
 type SearchButtonProps = {
     visible: boolean
+    bottom?: number
     onPress: (visible: boolean) => void
 }
 
-const SearchButton = ({ visible, onPress }: SearchButtonProps) => {
+const SearchButton = ({ visible, bottom = 130, onPress }: SearchButtonProps) => {
     return (
         <FAB
             icon={'magnify'}
             color={colors.background}
             // size={'large'}
             customSize={70}
-            style={styles.searchButton}
+            mode={'elevated'}
+            style={{ bottom: bottom, ...styles.searchButton }}
             onPress={() => onPress(!visible)}
         />
     )
@@ -33,7 +35,6 @@ const styles = StyleSheet.create({
         borderRadius: 100,
         backgroundColor: colors.primary,
         position: 'absolute',
-        bottom: 20,
         right: 20,
         zIndex: 1,
     },

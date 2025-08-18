@@ -1,13 +1,15 @@
 import { View } from 'react-native'
 import defaultStyle from '@/styles/style'
-import { SongsList } from '@/components/SongsList'
-import { useMemo, useState } from 'react'
+import { SongsList } from '@/components/SongsTab/SongsList'
+import { useEffect, useMemo, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import useGetMediaLibrary from '@/hooks/useGetMediaLibrary'
 import searchFilter from '@/utils/filter'
 import { colors } from '@/constants/tokens'
 import FloatingSearchBar from '@/components/FloatingSearchBar/FloatingSearchBar'
 import SearchButton from '@/components/FloatingSearchBar/SearchButton'
+import { MinimalMusicInfo } from '@/utils/getMediaLibraryMMKV'
+import { useAudioPlayer } from 'expo-audio'
 
 export default function () {
     // Get Data
@@ -23,8 +25,32 @@ export default function () {
         return searchFilter(minimalMusicInfoList, searchContent, searchFilters)
     }, [searchContent, minimalMusicInfoList, searchFilters])
 
+    // Player
+    const [songInfoPlaying, setSongInfoPlaying] = useState<MinimalMusicInfo>({
+        id: '',
+        title: '',
+        artist: undefined,
+        cover: undefined,
+        lyrics: undefined,
+        allLyricsLines: undefined,
+        filename: '',
+        uri: '',
+    })
+    const [songIdPlaying, setSongIdPlaying] = useState<string>('')
+    const handleSongChange = (songId: string) => {
+        setSongIdPlaying(songId)
+        const minimalSongInfo = minimalMusicInfoList.find((song) => song.id === songId)
+        if (minimalSongInfo) {
+            setSongInfoPlaying(minimalSongInfo)
+        }
+    }
+    const player = useAudioPlayer(songInfoPlaying.uri)
+    useEffect(() => {
+        player.play()
+    }, [songInfoPlaying])
+
     // UI
-    const [visible, setVisible] = useState(false)
+    const [isSearchBarVisible, setIsSearchBarVisible] = useState(false)
 
     // Index Component
     return (
@@ -38,17 +64,19 @@ export default function () {
             >
                 <View style={{ backgroundColor: '#fff', height: '100%' }}>
                     <FloatingSearchBar
-                        visible={visible}
+                        visible={isSearchBarVisible}
                         searchContent={searchContent}
                         onSearchChange={setSearchContent}
                         searchFilters={searchFilters}
                         onSelectionChange={setSearchFilters}
                     />
-                    <SearchButton visible={visible} onPress={setVisible} />
+                    <SearchButton visible={isSearchBarVisible} onPress={setIsSearchBarVisible} />
                     <SongsList
                         mediaLibrary={mediaLibrary}
                         filteredMusicInfoList={filteredSongs}
-                        visible={visible}
+                        visible={isSearchBarVisible}
+                        songIdPlaying={songIdPlaying}
+                        onSongChange={handleSongChange}
                     />
                 </View>
             </SafeAreaView>

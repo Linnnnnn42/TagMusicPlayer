@@ -1,11 +1,12 @@
 import { Stack } from 'expo-router'
-import { PaperProvider, MD3LightTheme } from 'react-native-paper'
+import { PaperProvider, MD3LightTheme as DefaultTheme } from 'react-native-paper'
 import { colors } from '@/constants/tokens'
 
 export default function AppLayout() {
     const myTheme = {
-        ...MD3LightTheme,
+        ...DefaultTheme,
         colors: {
+            ...DefaultTheme.colors,
             primary: colors.primary,
             onPrimary: 'rgb(255, 255, 255)',
             primaryContainer: 'rgb(201, 230, 255)',
@@ -40,7 +41,7 @@ export default function AppLayout() {
                 level1: 'rgb(239, 244, 250)',
                 level2: 'rgb(232, 240, 246)',
                 level3: 'rgb(224, 235, 243)',
-                level4: colors.primaryOpacity10Light,
+                level4: colors.primaryOpacity30Light,
                 level5: 'rgb(217, 231, 240)',
             },
             surfaceDisabled: 'rgba(26, 28, 30, 0.12)',

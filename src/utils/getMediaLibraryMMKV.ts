@@ -36,12 +36,16 @@ export type MusicInfo = Pick<
 export interface MinimalMusicInfo {
     id: string
     title: string
-    filename: string
     artist: string | undefined
     cover: string | undefined
     lyrics: ILyricsTag[] | undefined
     allLyricsLines: string | undefined
+    filename: string
+    uri: string
 }
+
+export interface MusicInfoForList {}
+export interface MusicInfoForPlayer {}
 
 export default class LocalMediaLibraryMMKV {
     constructor() {}
@@ -410,11 +414,12 @@ export default class LocalMediaLibraryMMKV {
         return musicInfoList.map((item: MusicInfo) => ({
             id: item.id,
             title: item.title && item.title.trim() !== '' ? item.title : item.filename,
-            filename: item.filename,
             artist: item.artist,
             cover: item.cover,
             lyrics: item.lyrics,
             allLyricsLines: this.concatAllLyricsLines(item.lyrics?.[0]),
+            filename: item.filename,
+            uri: item.uri,
         }))
     }
 
