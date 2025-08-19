@@ -33,7 +33,7 @@
       [
         "expo-media-library",
         {
-          "isAccessMediaLocationEnabled": true
+          "isAccessMediaLocationEnabled": false
         }
       ],
       "expo-audio"

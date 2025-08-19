@@ -1,4 +1,4 @@
-import { colors } from '@/constants/tokens'
+import { colors, paperThemeColors } from '@/constants/tokens'
 import { Surface } from 'react-native-paper'
 import { View, Text, StyleSheet, Animated, TouchableOpacity } from 'react-native'
 import MaterialIcons from '@expo/vector-icons/MaterialIcons'
@@ -9,7 +9,10 @@ import { useEffect, useState } from 'react'
 import { AudioPlayer, AudioStatus } from 'expo-audio'
 import { syncLyricsProvider } from '@/utils/syncLyricsProvider'
 import { FontAwesome6 } from '@expo/vector-icons'
-import * as React from 'react'
+import useImageColors from '@/hooks/useImageColors'
+import { AndroidImageColors } from 'react-native-image-colors/build/types'
+import useCoverColors from '@/hooks/useCoverColors'
+import { ColorsDisplay, SortedColorsDisplay } from '@/components/FloatingUtils/ColorDisplay'
 
 type FloatingPlayerProps = {
     songInfo?: MinimalMusicInfo
@@ -20,6 +23,15 @@ type FloatingPlayerProps = {
 const FloatingPlayer = ({ songInfo, playerStatus, player }: FloatingPlayerProps) => {
     if (!songInfo) return null
 
+    const coverColorsSource = useImageColors(songInfo.cover) as AndroidImageColors | null
+    const { coverColorsByLuminance, titleTextColor, lyricsTextColor } =
+        useCoverColors(coverColorsSource)
+
+    // Deconstructing all color props of the Android platform
+    const { dominant, average, vibrant, darkVibrant, lightVibrant, darkMuted, lightMuted, muted } =
+        coverColorsSource || {}
+
+    // Lyrics display
     const [currentLyric, setCurrentLyric] = useState('')
     useEffect(() => {
         if (playerStatus?.duration !== undefined && playerStatus?.currentTime !== undefined) {
@@ -27,6 +39,7 @@ const FloatingPlayer = ({ songInfo, playerStatus, player }: FloatingPlayerProps)
         }
     }, [playerStatus?.currentTime, songInfo.lyrics])
 
+    // Play/Pause
     const handlePlayPauseButton = () => {
         if (playerStatus?.playing === true) {
             player?.pause()
@@ -38,11 +51,9 @@ const FloatingPlayer = ({ songInfo, playerStatus, player }: FloatingPlayerProps)
                 playerStatus.isLoaded &&
                 playerStatus.currentTime >= playerStatus.duration
             ) {
-                console.log('hi1')
                 player?.seekTo(0)
                 player?.play()
             } else {
-                console.log('hi12')
                 player?.play()
             }
         }
@@ -51,41 +62,78 @@ const FloatingPlayer = ({ songInfo, playerStatus, player }: FloatingPlayerProps)
     return (
         <View
             style={{
-                flexDirection: 'row',
+                flexDirection: 'column',
                 justifyContent: 'center',
                 alignItems: 'center',
                 position: 'absolute',
                 bottom: 70,
                 left: 0,
-                height: 75,
                 width: '100%',
             }}
         >
-            <Surface style={styles.surface} elevation={4} mode={'elevated'}>
-                {songInfo.cover ? (
-                    <Image source={{ uri: songInfo.cover }} style={{ ...styles.songCoverImage }} />
-                ) : (
-                    <MaterialIcons
-                        name="art-track"
-                        size={60}
-                        style={{
-                            color: colors.textMutedOpacity90Light,
-                            backgroundColor: colors.textMutedOpacity30Light,
-                            textAlign: 'center',
-                            textAlignVertical: 'center',
-                            ...styles.songCoverImage,
-                        }}
+            {/*<ColorsDisplay coverColors={coverColorsSource} />*/}
+            {/*<SortedColorsDisplay colors={coverColorsByLuminance} />*/}
+
+            <View
+                style={{
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    height: 75,
+                    width: '100%',
+                }}
+            >
+                <Surface
+                    style={styles.surface}
+                    elevation={4}
+                    mode={'elevated'}
+                    theme={{
+                        colors: {
+                            elevation: {
+                                level4: dominant ? dominant : paperThemeColors.elevation.level4,
+                            },
+                        },
+                    }}
+                >
+                    {songInfo.cover ? (
+                        <Image
+                            source={{ uri: songInfo.cover }}
+                            style={{ ...styles.songCoverImage }}
+                        />
+                    ) : (
+                        <MaterialIcons
+                            name="art-track"
+                            size={60}
+                            style={{
+                                color: colors.textMutedOpacity90Light,
+                                backgroundColor: colors.textMutedOpacity30Light,
+                                textAlign: 'center',
+                                textAlignVertical: 'center',
+                                ...styles.songCoverImage,
+                            }}
+                        />
+                    )}
+                    <FloatingPlayerText
+                        songInfoText={songInfo}
+                        currentLyric={currentLyric}
+                        titleTextColor={titleTextColor}
+                        lyricsTextColor={lyricsTextColor}
                     />
-                )}
-                <FloatingPlayerText songInfoText={songInfo} currentLyric={currentLyric} />
-                <TouchableOpacity style={styles.playPauseButton} onPress={handlePlayPauseButton}>
-                    <FontAwesome6
-                        style={styles.playPauseButtonIcon}
-                        name={playerStatus?.playing ? 'pause' : 'play'}
-                        size={30}
-                    />
-                </TouchableOpacity>
-            </Surface>
+                    <TouchableOpacity
+                        style={styles.playPauseButton}
+                        onPress={handlePlayPauseButton}
+                    >
+                        <FontAwesome6
+                            style={{
+                                color: titleTextColor ? titleTextColor : colors.text,
+                                ...styles.playPauseButtonIcon,
+                            }}
+                            name={playerStatus?.playing ? 'pause' : 'play'}
+                            size={30}
+                        />
+                    </TouchableOpacity>
+                </Surface>
+            </View>
         </View>
     )
 }
@@ -94,7 +142,7 @@ export default FloatingPlayer
 
 const styles = StyleSheet.create({
     surface: {
-        width: '95%',
+        width: '93%',
         height: '100%',
         flexDirection: 'row',
         borderRadius: 20,
@@ -111,7 +159,7 @@ const styles = StyleSheet.create({
         verticalAlign: 'middle',
         textAlignVertical: 'center',
         height: '100%',
-        width: 80,
+        width: 50,
     },
     playPauseButtonIcon: {
         verticalAlign: 'middle',

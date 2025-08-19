@@ -7,15 +7,22 @@ import { MinimalMusicInfo } from '@/utils/getMediaLibraryMMKV'
 type FloatingPlayerTextProps = {
     songInfoText?: Pick<MinimalMusicInfo, 'title' | 'lyrics'>
     currentLyric?: string
+    titleTextColor?: string
+    lyricsTextColor?: string
 }
 
-export const FloatingPlayerText = ({ songInfoText, currentLyric }: FloatingPlayerTextProps) => {
+export const FloatingPlayerText = ({
+    songInfoText,
+    currentLyric,
+    titleTextColor,
+    lyricsTextColor,
+}: FloatingPlayerTextProps) => {
     return (
         <View
             style={{
                 // backgroundColor: colors.text,
                 flexDirection: 'column',
-                width: '55%',
+                width: '60%',
                 alignContent: 'center',
                 alignSelf: 'center',
                 justifyContent: 'center',
@@ -27,7 +34,7 @@ export const FloatingPlayerText = ({ songInfoText, currentLyric }: FloatingPlaye
                     style={{
                         fontSize: 15,
                         fontWeight: fontWeight.bold,
-                        color: colors.text,
+                        color: titleTextColor ? titleTextColor : colors.text,
                         textAlign: 'center',
                     }}
                     duration={10000}
@@ -44,8 +51,9 @@ export const FloatingPlayerText = ({ songInfoText, currentLyric }: FloatingPlaye
                     style={{
                         fontSize: 10,
                         fontWeight: fontWeight.bold,
-                        paddingTop: 4,
-                        color: colors.textMuted,
+                        paddingTop: 3,
+                        marginBottom: 3,
+                        color: lyricsTextColor ? lyricsTextColor : colors.textMuted,
                         textAlign: 'center',
                     }}
                     duration={10000}
