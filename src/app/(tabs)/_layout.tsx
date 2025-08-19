@@ -4,6 +4,7 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
 import { Pressable, type ViewProps } from 'react-native'
 import FloatingPlayer from '@/components/FloatingPlayer/FloatingPlayer'
 import useGlobalMusicPlayer from '@/hooks/useGlobalMusicPlayer'
+import { useEffect } from 'react'
 
 // Component for ripple effect on Android with customizable ripple color
 const TabBarButton = ({
@@ -58,7 +59,13 @@ const tabScreens = [
 export default function TabsLayout() {
     // Get global context
     const { musicPlayer } = useGlobalMusicPlayer()
-    const { songInfoPlaying, playerStatus, player } = musicPlayer
+    const { songInfoPlaying, playerStatus, player, playerModeSetter } = musicPlayer
+
+    useEffect(() => {
+        playerModeSetter({ shouldPlayInBackground: true }).then(() => {
+            console.log('Audio mode set to play in background')
+        })
+    }, []) // execute once when onMount
 
     return (
         <>

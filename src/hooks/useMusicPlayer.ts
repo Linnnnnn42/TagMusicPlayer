@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { MinimalMusicInfo } from '@/utils/getMediaLibraryMMKV'
-import { useAudioPlayer, useAudioPlayerStatus } from 'expo-audio'
+import { useAudioPlayer, useAudioPlayerStatus, setAudioModeAsync } from 'expo-audio'
 import useGetMediaLibrary from '@/hooks/useGetMediaLibrary'
 import { GlobalMusicPlayerContextType } from '@/app/_layout'
 
@@ -29,6 +29,9 @@ const useMusicPlayer = (mediaLibrary: GlobalMusicPlayerContextType['mediaLibrary
         }
     }
 
+    // audio mode setting
+    const playerModeSetter = setAudioModeAsync
+
     // player
     const player = useAudioPlayer(songInfoPlaying.uri)
     useEffect(() => {
@@ -42,6 +45,7 @@ const useMusicPlayer = (mediaLibrary: GlobalMusicPlayerContextType['mediaLibrary
         songIdPlaying,
         songInfoPlaying,
         handleSongChange,
+        playerModeSetter,
         playerStatus,
         player,
     }
