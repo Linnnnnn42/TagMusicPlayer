@@ -1,0 +1,20 @@
+{
+  "tabs": {
+    "playing": "正在播放",
+    "tags": "标签",
+    "favorites": "喜欢",
+    "songs": "歌曲"
+  },
+  "floatingPlayer": {
+    "emptyTitle": "未知标题",
+    "emptyLyrics": "暂无歌词"
+  },
+  "floatingSearchBar": {
+    "placeholder": "搜索音乐",
+    "filters": {
+      "title": "按标题",
+      "artist": "按作者",
+      "lyrics": "按歌词"
+    }
+  }
+}

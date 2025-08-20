@@ -29,7 +29,11 @@
     },
     "plugins": [
       "expo-router",
-      "expo-localization",
+      ["expo-localization",{
+        "supportedLocales": {
+          "android": ["en", "zh"]
+        }
+      }],
       [
         "expo-media-library",
         {

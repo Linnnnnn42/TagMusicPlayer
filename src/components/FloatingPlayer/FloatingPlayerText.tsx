@@ -3,6 +3,7 @@ import TextTicker from 'react-native-text-ticker'
 import { colors, fontWeight } from '@/constants/tokens'
 import * as React from 'react'
 import { MinimalMusicInfo } from '@/utils/getMediaLibraryMMKV'
+import { useTranslation } from 'react-i18next'
 
 type FloatingPlayerTextProps = {
     songInfoText?: Pick<MinimalMusicInfo, 'title' | 'lyrics'>
@@ -17,6 +18,8 @@ export const FloatingPlayerText = ({
     titleTextColor,
     lyricsTextColor,
 }: FloatingPlayerTextProps) => {
+    const { t } = useTranslation()
+
     return (
         <View
             style={{
@@ -43,7 +46,9 @@ export const FloatingPlayerText = ({
                     bounce={false}
                     scroll={false}
                 >
-                    {songInfoText ? `${songInfoText.title || '未知标题'}` : 'Unknown'}
+                    {songInfoText
+                        ? `${songInfoText.title || t('floatingPlayer.emptyTitle')}`
+                        : t('floatingPlayer.emptyTitle')}
                 </TextTicker>
             </View>
             <View>

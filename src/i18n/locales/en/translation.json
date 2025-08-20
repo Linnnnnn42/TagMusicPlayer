@@ -1,0 +1,20 @@
+{
+  "tabs": {
+    "playing": "Playing",
+    "tags": "Tags",
+    "favorites": "Favorites",
+    "songs": "Songs"
+  },
+  "floatingPlayer": {
+    "emptyTitle": "Unknown title",
+    "emptyLyrics": "No lyrics available"
+  },
+  "floatingSearchBar": {
+    "placeholder": "Find in songs",
+    "filters": {
+      "title": "Title",
+      "artist": "Artist",
+      "lyrics": "Lyrics"
+    }
+  }
+}

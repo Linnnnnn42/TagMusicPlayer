@@ -15,7 +15,7 @@ export default function FavoritesTab() {
                 }}
             >
                 <TabHeader
-                    tabTitle={'Favorites'}
+                    tabTitle={'tabs.favorites'}
                     iconName={'favorites'}
                     rotate={'-15deg'}
                     translateY={-35}

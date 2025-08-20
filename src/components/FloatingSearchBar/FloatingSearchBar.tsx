@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react'
 import { View, Text, StyleSheet, Animated } from 'react-native'
 import RowCheckBox from '@/components/FloatingSearchBar/RowCheckbox'
 import * as React from 'react'
+import { useTranslation } from 'react-i18next'
 
 type FloatingSearchBarProps = {
     visible?: boolean
@@ -24,6 +25,8 @@ const FloatingSearchBar = ({
     onSelectionChange,
     ref,
 }: FloatingSearchBarProps) => {
+    const { t, ready } = useTranslation()
+
     // UI / Animation
     const animatedValue = useRef(new Animated.Value(visible ? 1 : 0)).current
     const [visibility, setVisibility] = useState(visible)
@@ -66,7 +69,8 @@ const FloatingSearchBar = ({
         }
     }, [visible, animatedValue])
 
-    if (!visibility) {
+    // 如果翻译尚未准备好，返回 null
+    if (!visibility || !ready) {
         return null
     }
 
@@ -100,14 +104,18 @@ const FloatingSearchBar = ({
                         <Searchbar
                             ref={searchbarRef}
                             value={searchContent}
-                            placeholder={'Find in songs'}
+                            placeholder={t('floatingSearchBar.placeholder')}
                             searchAccessibilityLabel={'Find in songs'}
                             mode={'bar'}
                             onChangeText={onSearchChange}
                             theme={{ colors: { onSurfaceVariant: 'black' } }}
                         />
                         <RowCheckBox
-                            items={['Title', 'Artist', 'Lyrics']}
+                            items={[
+                                t('floatingSearchBar.filters.title'),
+                                t('floatingSearchBar.filters.artist'),
+                                t('floatingSearchBar.filters.lyrics'),
+                            ]}
                             center={true}
                             searchFilters={searchFilters}
                             onSelectionChange={onSelectionChange}

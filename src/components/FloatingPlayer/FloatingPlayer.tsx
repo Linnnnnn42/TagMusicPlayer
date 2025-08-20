@@ -12,6 +12,7 @@ import { FontAwesome6 } from '@expo/vector-icons'
 import useImageColors from '@/hooks/useImageColors'
 import { AndroidImageColors } from 'react-native-image-colors/build/types'
 import useCoverColors from '@/hooks/useCoverColors'
+import { useTranslation } from 'react-i18next'
 import { ColorsDisplay, SortedColorsDisplay } from '@/components/FloatingUtils/ColorDisplay'
 
 type FloatingPlayerProps = {
@@ -22,6 +23,8 @@ type FloatingPlayerProps = {
 
 const FloatingPlayer = ({ songInfo, playerStatus, player }: FloatingPlayerProps) => {
     if (!songInfo) return null
+
+    const { t } = useTranslation()
 
     const coverColorsSource = useImageColors(songInfo.cover) as AndroidImageColors | null
     const { coverColorsByLuminance, titleTextColor, lyricsTextColor } =
@@ -35,7 +38,10 @@ const FloatingPlayer = ({ songInfo, playerStatus, player }: FloatingPlayerProps)
     const [currentLyric, setCurrentLyric] = useState('')
     useEffect(() => {
         if (playerStatus?.duration !== undefined && playerStatus?.currentTime !== undefined) {
-            setCurrentLyric(syncLyricsProvider(songInfo.lyrics, playerStatus.currentTime))
+            setCurrentLyric(
+                syncLyricsProvider(songInfo.lyrics, playerStatus.currentTime) ||
+                    t('floatingPlayer.emptyLyrics'),
+            )
         }
     }, [playerStatus?.currentTime, songInfo.lyrics])
 

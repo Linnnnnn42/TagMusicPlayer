@@ -20,7 +20,7 @@ export default function PlaylistsTab() {
                 }}
             >
                 <TabHeader // height: '14%'
-                    tabTitle={'Playlists'}
+                    tabTitle={'tabs.playing'}
                     iconName={'playlists'}
                     rotate={'-15deg'}
                     translateY={-35}

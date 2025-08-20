@@ -20,7 +20,7 @@ export default function TagsTab() {
                 }}
             >
                 <TabHeader
-                    tabTitle={' Tags'}
+                    tabTitle={'tabs.tags'}
                     iconName={'tags'}
                     rotate={'-15deg'}
                     translateY={-35}

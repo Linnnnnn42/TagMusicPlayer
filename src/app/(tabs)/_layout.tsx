@@ -5,6 +5,7 @@ import { Pressable, type ViewProps } from 'react-native'
 import FloatingPlayer from '@/components/FloatingPlayer/FloatingPlayer'
 import useGlobalMusicPlayer from '@/hooks/useGlobalMusicPlayer'
 import { useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 
 // Component for ripple effect on Android with customizable ripple color
 const TabBarButton = ({
@@ -24,7 +25,7 @@ const TabBarButton = ({
 const tabScreens = [
     {
         name: '(playlists)',
-        title: 'Playlists',
+        title: 'tabs.playing',
         icon: {
             name: tabIcons.playlists as keyof typeof MaterialCommunityIcons.glyphMap,
             size: 29,
@@ -32,7 +33,7 @@ const tabScreens = [
     },
     {
         name: 'tags',
-        title: 'Tags',
+        title: 'tabs.tags',
         icon: {
             name: tabIcons.tags as keyof typeof MaterialCommunityIcons.glyphMap,
             size: 28,
@@ -40,7 +41,7 @@ const tabScreens = [
     },
     {
         name: 'favorites',
-        title: 'Favorites',
+        title: 'tabs.favorites',
         icon: {
             name: tabIcons.favorites as keyof typeof MaterialCommunityIcons.glyphMap,
             size: 26,
@@ -48,7 +49,7 @@ const tabScreens = [
     },
     {
         name: 'songs',
-        title: 'Songs',
+        title: 'tabs.songs',
         icon: {
             name: tabIcons.songs as keyof typeof MaterialCommunityIcons.glyphMap,
             size: 28,
@@ -57,6 +58,9 @@ const tabScreens = [
 ] as const
 
 export default function TabsLayout() {
+    // Get translation
+    const { t } = useTranslation()
+
     // Get global context
     const { musicPlayer } = useGlobalMusicPlayer()
     const { songInfoPlaying, playerStatus, player, playerModeSetter } = musicPlayer
@@ -88,7 +92,7 @@ export default function TabsLayout() {
                         key={screen.name}
                         name={screen.name}
                         options={{
-                            title: screen.title,
+                            title: t(screen.title),
                             tabBarIcon: ({ color }) => (
                                 <MaterialCommunityIcons
                                     name={screen.icon.name}

@@ -40,9 +40,9 @@ export const syncLyricsProvider = (
                 return currentLyric.text
             }
         } else {
-            return 'No lyrics available'
+            return undefined
         }
     }
 
-    return 'No lyrics available'
+    return undefined
 }
