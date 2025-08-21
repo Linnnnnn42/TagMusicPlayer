@@ -1,11 +1,12 @@
 import { Tabs } from 'expo-router'
 import { colors, fontSize, fontWeight, tabIcons } from '@/constants/tokens'
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
-import { Pressable, type ViewProps } from 'react-native'
+import { Pressable, StyleSheet, type ViewProps } from 'react-native'
 import FloatingPlayer from '@/components/FloatingPlayer/FloatingPlayer'
 import useGlobalMusicPlayer from '@/hooks/useGlobalMusicPlayer'
-import { useEffect } from 'react'
+import React, { useCallback, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
+import Player, { type PlayerHandle } from '@/app/player'
 
 // Component for ripple effect on Android with customizable ripple color
 const TabBarButton = ({
@@ -64,6 +65,9 @@ export default function TabsLayout() {
     // Get global context
     const { musicPlayer } = useGlobalMusicPlayer()
     const { songInfoPlaying, playerStatus, player, playerModeSetter } = musicPlayer
+    
+    // Player ref
+    const playerRef = useRef<PlayerHandle>(null)
 
     useEffect(() => {
         playerModeSetter({ shouldPlayInBackground: true }).then(() => {
@@ -109,7 +113,9 @@ export default function TabsLayout() {
                 songInfo={songInfoPlaying}
                 playerStatus={playerStatus}
                 player={player}
+                onFloatingPlayerPress={() => playerRef.current?.openPlayer()}
             />
+            <Player ref={playerRef} />
         </>
     )
 }

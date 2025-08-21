@@ -10,6 +10,7 @@ import { initI18n } from '@/i18n/i18nNext'
 import BootSplash from 'react-native-bootsplash'
 import { View } from 'react-native'
 import { AnimatedBootSplash } from '@/components/AnimatedBootSplash'
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
 
 // Setup splashscreen animation
 
@@ -76,7 +77,9 @@ export default function AppLayout() {
             <globalMusicPlayerContext.Provider value={{ mediaLibrary, musicPlayer }}>
                 <PaperProvider theme={myTheme}>
                     <SafeAreaProvider>
-                        <RootNavigation />
+                        <GestureHandlerRootView>
+                            <RootNavigation />
+                        </GestureHandlerRootView>
                     </SafeAreaProvider>
                 </PaperProvider>
             </globalMusicPlayerContext.Provider>

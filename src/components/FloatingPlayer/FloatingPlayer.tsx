@@ -19,9 +19,15 @@ type FloatingPlayerProps = {
     songInfo?: MinimalMusicInfo
     playerStatus?: AudioStatus
     player?: AudioPlayer
+    onFloatingPlayerPress?: () => void
 }
 
-const FloatingPlayer = ({ songInfo, playerStatus, player }: FloatingPlayerProps) => {
+const FloatingPlayer = ({
+    songInfo,
+    playerStatus,
+    player,
+    onFloatingPlayerPress,
+}: FloatingPlayerProps) => {
     if (!songInfo) return null
 
     const { t } = useTranslation()
@@ -65,82 +71,89 @@ const FloatingPlayer = ({ songInfo, playerStatus, player }: FloatingPlayerProps)
         }
     }
 
-    return (
-        <View
-            style={{
-                flexDirection: 'column',
-                justifyContent: 'center',
-                alignItems: 'center',
-                position: 'absolute',
-                bottom: 70,
-                left: 0,
-                width: '100%',
-            }}
-        >
-            {/*<ColorsDisplay coverColors={coverColorsSource} />*/}
-            {/*<SortedColorsDisplay colors={coverColorsByLuminance} />*/}
+    // to player screen
+    const handleOnPress = () => {
+        onFloatingPlayerPress && onFloatingPlayerPress()
+    }
 
+    return (
+        <TouchableOpacity activeOpacity={0.9} onPressOut={handleOnPress}>
             <View
                 style={{
-                    flexDirection: 'row',
+                    flexDirection: 'column',
                     justifyContent: 'center',
                     alignItems: 'center',
-                    height: 75,
+                    position: 'absolute',
+                    bottom: 70,
+                    left: 0,
                     width: '100%',
                 }}
             >
-                <Surface
-                    style={styles.surface}
-                    elevation={4}
-                    mode={'elevated'}
-                    theme={{
-                        colors: {
-                            elevation: {
-                                level4: dominant ? dominant : paperThemeColors.elevation.level4,
-                            },
-                        },
+                {/*<ColorsDisplay coverColors={coverColorsSource} />*/}
+                {/*<SortedColorsDisplay colors={coverColorsByLuminance} />*/}
+
+                <View
+                    style={{
+                        flexDirection: 'row',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        height: 75,
+                        width: '100%',
                     }}
                 >
-                    {songInfo.cover ? (
-                        <Image
-                            source={{ uri: songInfo.cover }}
-                            style={{ ...styles.songCoverImage }}
-                        />
-                    ) : (
-                        <MaterialIcons
-                            name="art-track"
-                            size={60}
-                            style={{
-                                color: colors.textMutedOpacity90Light,
-                                backgroundColor: colors.textMutedOpacity30Light,
-                                textAlign: 'center',
-                                textAlignVertical: 'center',
-                                ...styles.songCoverImage,
-                            }}
-                        />
-                    )}
-                    <FloatingPlayerText
-                        songInfoText={songInfo}
-                        currentLyric={currentLyric}
-                        titleTextColor={titleTextColor}
-                        lyricsTextColor={lyricsTextColor}
-                    />
-                    <TouchableOpacity
-                        style={styles.playPauseButton}
-                        onPress={handlePlayPauseButton}
+                    <Surface
+                        style={styles.surface}
+                        elevation={4}
+                        mode={'elevated'}
+                        theme={{
+                            colors: {
+                                elevation: {
+                                    level4: dominant ? dominant : paperThemeColors.elevation.level4,
+                                },
+                            },
+                        }}
                     >
-                        <FontAwesome6
-                            style={{
-                                color: titleTextColor ? titleTextColor : colors.text,
-                                ...styles.playPauseButtonIcon,
-                            }}
-                            name={playerStatus?.playing ? 'pause' : 'play'}
-                            size={30}
+                        {songInfo.cover ? (
+                            <Image
+                                source={{ uri: songInfo.cover }}
+                                style={{ ...styles.songCoverImage }}
+                            />
+                        ) : (
+                            <MaterialIcons
+                                name="art-track"
+                                size={60}
+                                style={{
+                                    color: colors.textMutedOpacity90Light,
+                                    backgroundColor: colors.textMutedOpacity30Light,
+                                    textAlign: 'center',
+                                    textAlignVertical: 'center',
+                                    ...styles.songCoverImage,
+                                }}
+                            />
+                        )}
+                        <FloatingPlayerText
+                            songInfoText={songInfo}
+                            currentLyric={currentLyric}
+                            titleTextColor={titleTextColor}
+                            lyricsTextColor={lyricsTextColor}
                         />
-                    </TouchableOpacity>
-                </Surface>
+                        <TouchableOpacity
+                            style={styles.playPauseButton}
+                            onPress={handlePlayPauseButton}
+                        >
+                            <FontAwesome6
+                                style={{
+                                    color: titleTextColor ? titleTextColor : colors.text,
+                                    ...styles.playPauseButtonIcon,
+                                }}
+                                name={playerStatus?.playing ? 'pause' : 'play'}
+                                size={30}
+                            />
+                        </TouchableOpacity>
+                    </Surface>
+                </View>
             </View>
-        </View>
+        </TouchableOpacity>
     )
 }
 
