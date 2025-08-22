@@ -2,7 +2,7 @@ import { Stack } from 'expo-router'
 import { PaperProvider, MD3LightTheme as DefaultTheme, ActivityIndicator } from 'react-native-paper'
 import { colors, paperThemeColors } from '@/constants/tokens'
 import { createContext, useContext, useEffect, useRef, useState } from 'react'
-import useMusicPlayer from '@/hooks/useMusicPlayer'
+import useGetMusicPlayer from '@/hooks/useGetMusicPlayer'
 import useGetMediaLibrary from '@/hooks/useGetMediaLibrary'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { getLocales, Locale } from 'expo-localization'
@@ -12,20 +12,14 @@ import { View } from 'react-native'
 import { AnimatedBootSplash } from '@/components/AnimatedBootSplash'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 
-// Setup splashscreen animation
-
-export interface GlobalMusicPlayerContextType {
-    mediaLibrary: ReturnType<typeof useGetMediaLibrary>
-    musicPlayer: ReturnType<typeof useMusicPlayer>
-}
-
 // Setup global context
-export const globalMusicPlayerContext = createContext<GlobalMusicPlayerContextType | null>(null)
+export const mediaLibraryContext = createContext<ReturnType<typeof useGetMediaLibrary> | null>(null)
+export const musicPlayerContext = createContext<ReturnType<typeof useGetMusicPlayer> | null>(null)
 
 export default function AppLayout() {
     // Setup global context
     const mediaLibrary = useGetMediaLibrary()
-    const musicPlayer = useMusicPlayer(mediaLibrary)
+    const musicPlayer = useGetMusicPlayer(mediaLibrary)
 
     // Initialization
     const { loading } = mediaLibrary
@@ -74,15 +68,17 @@ export default function AppLayout() {
     // Render the main app when the app is ready and the splash screen is hidden
     if (appReady && splashHidden) {
         return (
-            <globalMusicPlayerContext.Provider value={{ mediaLibrary, musicPlayer }}>
-                <PaperProvider theme={myTheme}>
-                    <SafeAreaProvider>
-                        <GestureHandlerRootView>
-                            <RootNavigation />
-                        </GestureHandlerRootView>
-                    </SafeAreaProvider>
-                </PaperProvider>
-            </globalMusicPlayerContext.Provider>
+            <musicPlayerContext.Provider value={musicPlayer}>
+                <mediaLibraryContext.Provider value={mediaLibrary}>
+                    <PaperProvider theme={myTheme}>
+                        <SafeAreaProvider>
+                            <GestureHandlerRootView>
+                                <RootNavigation />
+                            </GestureHandlerRootView>
+                        </SafeAreaProvider>
+                    </PaperProvider>
+                </mediaLibraryContext.Provider>
+            </musicPlayerContext.Provider>
         )
     }
 

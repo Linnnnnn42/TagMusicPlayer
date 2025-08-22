@@ -2,9 +2,8 @@ import { useEffect, useState } from 'react'
 import { MinimalMusicInfo } from '@/utils/getMediaLibraryMMKV'
 import { useAudioPlayer, useAudioPlayerStatus, setAudioModeAsync } from 'expo-audio'
 import useGetMediaLibrary from '@/hooks/useGetMediaLibrary'
-import { GlobalMusicPlayerContextType } from '@/app/_layout'
 
-const useMusicPlayer = (mediaLibrary: GlobalMusicPlayerContextType['mediaLibrary']) => {
+const useGetMusicPlayer = (mediaLibrary: ReturnType<typeof useGetMediaLibrary>) => {
     // Get Data
     // const mediaLibrary = useGetMediaLibrary()
     const { minimalMusicInfoList } = { ...mediaLibrary }
@@ -51,4 +50,4 @@ const useMusicPlayer = (mediaLibrary: GlobalMusicPlayerContextType['mediaLibrary
     }
 }
 
-export default useMusicPlayer
+export default useGetMusicPlayer

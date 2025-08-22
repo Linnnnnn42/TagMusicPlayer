@@ -2,7 +2,6 @@ import { colors } from '@/constants/tokens'
 import { Checkbox } from 'react-native-paper'
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import { useEffect, useState } from 'react'
-import searchFilter from '@/utils/filter'
 
 interface RowCheckboxProps {
     items?: string[]

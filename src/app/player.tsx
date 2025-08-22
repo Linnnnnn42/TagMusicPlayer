@@ -1,38 +1,51 @@
-import React, {
-    useCallback,
-    useRef,
-    useMemo,
-    forwardRef,
-    useImperativeHandle,
-    useEffect,
-} from 'react'
-import { StyleSheet, View, Text } from 'react-native'
+import React, { useCallback, useRef, useMemo, useEffect, useState } from 'react'
+import { StyleSheet, View, Text, Animated, TouchableOpacity } from 'react-native'
 import BottomSheet, {
     BottomSheetView,
     useBottomSheetSpringConfigs,
     useBottomSheetTimingConfigs,
 } from '@gorhom/bottom-sheet'
 import { BackHandler } from 'react-native'
-import { Easing } from 'react-native-reanimated'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import defaultStyle from '@/styles/style'
-import { colors } from '@/constants/tokens'
+import { colors, fontWeight } from '@/constants/tokens'
+import { PlayerProps } from '@/app/(tabs)/_layout'
+import { Image } from 'expo-image'
+import MaterialIcons from '@expo/vector-icons/MaterialIcons'
+import TextTicker from 'react-native-text-ticker'
+import { useTranslation } from 'react-i18next'
+import { Slider as SliderAwesome } from 'react-native-awesome-slider'
+import { useSharedValue } from 'react-native-reanimated'
+import { FontAwesome6 } from '@expo/vector-icons'
 
 export type PlayerHandle = {
     openPlayer: () => void
     closePlayer: () => void
 }
 
-const Player = forwardRef<PlayerHandle>((_, ref) => {
-    // hooks
+type BottomPlayerProps = PlayerProps & {
+    ref?: React.Ref<PlayerHandle>
+}
+
+const Player = ({
+    ref,
+    player,
+    playerStatus,
+    backgroundColor,
+    titleTextColor,
+    lyricsTextColor,
+    songInfo,
+    currentLyric,
+}: BottomPlayerProps) => {
+    const { t } = useTranslation()
+
+    // For bottom sheet:
+    // Bottom sheet hooks
     const sheetRef = useRef<BottomSheet>(null)
     const currentIndexRef = useRef<number>(-1)
-
-    // variables
+    // Bottom sheet variables
     const snapPoints = useMemo(() => ['100%'], [])
     const { top } = useSafeAreaInsets()
-
-    // animation configs with timing
+    // Bottom sheet animation configs
     const animationConfigs = useBottomSheetSpringConfigs({
         damping: 80,
         overshootClamping: true,
@@ -40,20 +53,16 @@ const Player = forwardRef<PlayerHandle>((_, ref) => {
         restSpeedThreshold: 0.1,
         stiffness: 500,
     })
-
-    // callbacks
+    // Bottom sheet callbacks
     const handleSheetChange = useCallback((index: number) => {
         currentIndexRef.current = index
     }, [])
-
     const handleSnapPress = useCallback((index: number) => {
         sheetRef.current?.snapToIndex(index)
     }, [])
-
     const handleClosePress = useCallback(() => {
         sheetRef.current?.close()
     }, [])
-
     // Handle hardware back button
     useEffect(() => {
         const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
@@ -66,14 +75,65 @@ const Player = forwardRef<PlayerHandle>((_, ref) => {
 
         return () => backHandler.remove()
     }, [handleClosePress])
-
     // Expose methods to parent components
-    useImperativeHandle(ref, () => ({
-        openPlayer: () => handleSnapPress(0),
-        closePlayer: () => handleClosePress(),
-    }))
+    useEffect(() => {
+        if (ref) {
+            if (typeof ref === 'function') {
+                ref({
+                    openPlayer: () => handleSnapPress(0),
+                    closePlayer: () => handleClosePress(),
+                })
+            } else if (ref.hasOwnProperty('current')) {
+                ;(ref as React.RefObject<PlayerHandle>).current = {
+                    openPlayer: () => handleSnapPress(0),
+                    closePlayer: () => handleClosePress(),
+                }
+            }
+        }
+    }, [ref, handleSnapPress, handleClosePress])
 
-    // render
+    // For slider
+    const progress = useSharedValue(0)
+    const min = useSharedValue(0)
+    const max = useSharedValue(1)
+    const [isProgressMoving, setIsProgressMoving] = useState(true)
+    const [progressState, setProgressState] = useState(0)
+    // For seek state to prevent button flickering
+    const [isSeeking, setIsSeeking] = useState(false)
+    const [lastPlayPauseState, setLastPlayPauseState] = useState('')
+    useEffect(() => {
+        if (isProgressMoving) {
+            if (playerStatus && playerStatus.duration && playerStatus.duration > 0) {
+                progress.value = (playerStatus.currentTime || 0) / playerStatus.duration
+            } else {
+                progress.value = 0
+            }
+            setProgressState(progress.value)
+        } else {
+        }
+    }, [playerStatus?.currentTime, playerStatus?.duration, isProgressMoving])
+
+    // For controls
+    const handlePlayPauseButton = () => {
+        if (playerStatus?.playing === true) {
+            player?.pause()
+        } else {
+            if (
+                playerStatus &&
+                playerStatus.currentTime !== undefined &&
+                playerStatus.duration !== undefined &&
+                playerStatus.isLoaded &&
+                playerStatus.currentTime >= playerStatus.duration
+            ) {
+                player?.seekTo(0)
+                player?.play()
+            } else {
+                player?.play()
+            }
+        }
+    }
+
+    // Render player
     return (
         <BottomSheet
             ref={sheetRef}
@@ -85,28 +145,232 @@ const Player = forwardRef<PlayerHandle>((_, ref) => {
             animationConfigs={animationConfigs}
             // topInset={top}
             handleComponent={null}
+            enableOverDrag={false}
+            overDragResistanceFactor={0}
         >
-            <BottomSheetView style={{ ...styles.contentContainer, paddingTop: top }}>
+            <BottomSheetView
+                style={{
+                    ...styles.contentContainer,
+                    paddingTop: top,
+                    backgroundColor: backgroundColor,
+                }}
+            >
                 <View
                     style={{
                         flex: 1,
                         width: '100%',
                         height: '100%',
-                        // backgroundColor: 'rgba(0,0,0,0.5)',
+                        backgroundColor: 'rgba(0,0,0,0)',
                     }}
-                ></View>
+                >
+                    {/*Title*/}
+                    <TextTicker
+                        style={{
+                            fontSize: 22,
+                            fontWeight: fontWeight.bold,
+                            color: titleTextColor ? titleTextColor : colors.text,
+                            textAlign: 'center',
+                            paddingTop: 25,
+                        }}
+                        duration={10000}
+                        animationType={'scroll'}
+                        loop={true}
+                        bounce={false}
+                        scroll={false}
+                    >
+                        {songInfo?.title
+                            ? `${songInfo?.title || t('player.emptyTitle')}`
+                            : t('player.emptyTitle')}
+                    </TextTicker>
+                    {/*Artist*/}
+                    <TextTicker
+                        style={{
+                            fontSize: 16,
+                            fontWeight: fontWeight.bold,
+                            color: titleTextColor ? titleTextColor + '80' : colors.textMuted + '80',
+                            textAlign: 'center',
+                            paddingBottom: 25,
+                        }}
+                        duration={10000}
+                        animationType={'scroll'}
+                        loop={true}
+                        bounce={false}
+                        scroll={false}
+                    >
+                        {songInfo?.artist
+                            ? `${songInfo?.artist || t('player.emptyArtist')}`
+                            : t('player.emptyArtist')}
+                    </TextTicker>
+                    {/*Cover*/}
+                    {songInfo?.cover ? (
+                        <Image
+                            source={{ uri: songInfo.cover }}
+                            style={{ ...styles.songCoverImage }}
+                        />
+                    ) : (
+                        <MaterialIcons
+                            name="art-track"
+                            size={250}
+                            style={{
+                                color: colors.textMutedOpacity90Light,
+                                backgroundColor: colors.textMutedOpacity30Light,
+                                textAlign: 'center',
+                                textAlignVertical: 'center',
+                                ...styles.songCoverImage,
+                            }}
+                        />
+                    )}
+                    {/*Lyrics*/}
+                    <Text
+                        style={{
+                            fontSize: 13,
+                            height: 60,
+                            fontWeight: fontWeight.bold,
+                            marginTop: 20,
+                            marginBottom: 20,
+                            color: lyricsTextColor ? lyricsTextColor : colors.textMuted,
+                            textAlign: 'center',
+                            justifyContent: 'center',
+                            verticalAlign: 'middle',
+                            // backgroundColor: 'rgba(0,0,0,0.2)',
+                        }}
+                        numberOfLines={2}
+                    >
+                        {currentLyric}
+                    </Text>
+
+                    {/*Progress slider*/}
+                    <SliderAwesome
+                        style={{
+                            height: 20,
+                            flex: 0,
+                        }}
+                        theme={{
+                            disableMinTrackTintColor: colors.textMuted,
+                            maximumTrackTintColor: titleTextColor
+                                ? titleTextColor + '80'
+                                : colors.textMuted + '80',
+                            minimumTrackTintColor: titleTextColor ? titleTextColor : colors.text,
+                            cacheTrackTintColor: lyricsTextColor
+                                ? lyricsTextColor
+                                : colors.textMuted,
+                            bubbleBackgroundColor: '#666',
+                            heartbeatColor: '#999',
+                        }}
+                        progress={progress}
+                        minimumValue={min}
+                        maximumValue={max}
+                        onSlidingStart={() => {
+                            setIsProgressMoving(false)
+                            if (playerStatus?.playing) {
+                                setLastPlayPauseState('pause')
+                            } else {
+                                setLastPlayPauseState('play')
+                            }
+                            setIsSeeking(true)
+                        }}
+                        onSlidingComplete={(value) => {
+                            // console.log('onValChg')
+                            player?.seekTo(
+                                playerStatus?.duration ? value * playerStatus?.duration : 0,
+                            )
+                            if (!playerStatus?.playing) {
+                                player?.play()
+                            }
+                            setTimeout(() => {
+                                setIsProgressMoving(true)
+                                setIsSeeking(false)
+                            }, 500)
+                        }}
+                        renderBubble={() => {
+                            return <Text>{}</Text>
+                        }}
+                        disable={!songInfo?.title}
+                    />
+
+                    {/*Controls*/}
+                    <View
+                        style={{
+                            flexDirection: 'row',
+                            alignContent: 'space-evenly',
+                            justifyContent: 'space-evenly',
+                            paddingVertical: 40,
+                        }}
+                    >
+                        <TouchableOpacity style={styles.playPauseButton}>
+                            <FontAwesome6
+                                style={{
+                                    color: titleTextColor ? titleTextColor : colors.text,
+                                    ...styles.playPauseButtonIcon,
+                                }}
+                                name={'backward'}
+                                size={30}
+                            />
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={{ ...styles.playPauseButton, transform: [{ translateX: 3 }] }}
+                            onPress={handlePlayPauseButton}
+                        >
+                            <FontAwesome6
+                                style={{
+                                    color: titleTextColor ? titleTextColor : colors.text,
+                                    ...styles.playPauseButtonIcon,
+                                }}
+                                name={
+                                    isSeeking
+                                        ? lastPlayPauseState
+                                        : playerStatus?.playing
+                                          ? 'pause'
+                                          : 'play'
+                                }
+                                size={30}
+                            />
+                        </TouchableOpacity>
+
+                        <TouchableOpacity style={styles.playPauseButton}>
+                            <FontAwesome6
+                                style={{
+                                    color: titleTextColor ? titleTextColor : colors.text,
+                                    ...styles.playPauseButtonIcon,
+                                }}
+                                name={'forward'}
+                                size={30}
+                            />
+                        </TouchableOpacity>
+                    </View>
+                </View>
             </BottomSheetView>
         </BottomSheet>
     )
-})
+}
 
 const styles = StyleSheet.create({
     contentContainer: {
         flex: 1,
-        paddingHorizontal: 10,
+        paddingHorizontal: 30,
         alignItems: 'center',
-        backgroundColor: colors.secondary,
         height: '100%',
+    },
+    songCoverImage: {
+        borderRadius: 8,
+        width: '100%',
+        aspectRatio: 1,
+        left: 0,
+        bottom: 0,
+        elevation: 10,
+        justifyContent: 'center',
+        alignSelf: 'center',
+    },
+    playPauseButton: {
+        // verticalAlign: 'middle',
+        // textAlignVertical: 'center',
+        // // height: '100%',
+        // width: 50,
+    },
+    playPauseButtonIcon: {
+        verticalAlign: 'middle',
+        textAlignVertical: 'center',
+        textAlign: 'center',
     },
 })
 

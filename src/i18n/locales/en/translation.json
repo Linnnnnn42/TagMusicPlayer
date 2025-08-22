@@ -5,8 +5,9 @@
     "favorites": "Favorites",
     "songs": "Songs"
   },
-  "floatingPlayer": {
+  "player": {
     "emptyTitle": "Unknown title",
+    "emptyArtist": "Unknown artist",
     "emptyLyrics": "No lyrics available"
   },
   "floatingSearchBar": {

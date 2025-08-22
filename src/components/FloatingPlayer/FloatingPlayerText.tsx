@@ -47,8 +47,8 @@ export const FloatingPlayerText = ({
                     scroll={false}
                 >
                     {songInfoText
-                        ? `${songInfoText.title || t('floatingPlayer.emptyTitle')}`
-                        : t('floatingPlayer.emptyTitle')}
+                        ? `${songInfoText.title || t('player.emptyTitle')}`
+                        : t('player.emptyTitle')}
                 </TextTicker>
             </View>
             <View>

@@ -16,6 +16,10 @@ type FloatingSearchBarProps = {
     ref?: React.Ref<{ focus: () => void }>
 }
 
+export const byTitle = 'floatingSearchBar.filters.title'
+export const byArtist = 'floatingSearchBar.filters.artist'
+export const byLyrics = 'floatingSearchBar.filters.lyrics'
+
 const FloatingSearchBar = ({
     visible = true,
     hideOffset = -300,
@@ -111,11 +115,7 @@ const FloatingSearchBar = ({
                             theme={{ colors: { onSurfaceVariant: 'black' } }}
                         />
                         <RowCheckBox
-                            items={[
-                                t('floatingSearchBar.filters.title'),
-                                t('floatingSearchBar.filters.artist'),
-                                t('floatingSearchBar.filters.lyrics'),
-                            ]}
+                            items={[t(byTitle), t(byArtist), t(byLyrics)]}
                             center={true}
                             searchFilters={searchFilters}
                             onSelectionChange={onSelectionChange}

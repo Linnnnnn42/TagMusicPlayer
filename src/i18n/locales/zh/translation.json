@@ -5,8 +5,9 @@
     "favorites": "喜欢",
     "songs": "歌曲"
   },
-  "floatingPlayer": {
+  "player": {
     "emptyTitle": "未知标题",
+    "emptyArtist": "佚名",
     "emptyLyrics": "暂无歌词"
   },
   "floatingSearchBar": {

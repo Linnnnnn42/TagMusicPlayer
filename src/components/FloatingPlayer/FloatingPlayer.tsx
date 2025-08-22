@@ -2,24 +2,20 @@ import { colors, paperThemeColors } from '@/constants/tokens'
 import { Surface } from 'react-native-paper'
 import { View, Text, StyleSheet, Animated, TouchableOpacity } from 'react-native'
 import MaterialIcons from '@expo/vector-icons/MaterialIcons'
-import { MinimalMusicInfo } from '@/utils/getMediaLibraryMMKV'
 import { FloatingPlayerText } from '@/components/FloatingPlayer/FloatingPlayerText'
 import { Image } from 'expo-image'
 import { useEffect, useState } from 'react'
-import { AudioPlayer, AudioStatus } from 'expo-audio'
-import { syncLyricsProvider } from '@/utils/syncLyricsProvider'
+import { syncLyricsProvider } from '@/hooks/player/syncLyricsProvider'
 import { FontAwesome6 } from '@expo/vector-icons'
-import useImageColors from '@/hooks/useImageColors'
 import { AndroidImageColors } from 'react-native-image-colors/build/types'
-import useCoverColors from '@/hooks/useCoverColors'
 import { useTranslation } from 'react-i18next'
 import { ColorsDisplay, SortedColorsDisplay } from '@/components/FloatingUtils/ColorDisplay'
+import { PlayerProps } from '@/app/(tabs)/_layout'
 
-type FloatingPlayerProps = {
-    songInfo?: MinimalMusicInfo
-    playerStatus?: AudioStatus
-    player?: AudioPlayer
+type FloatingPlayerProps = PlayerProps & {
     onFloatingPlayerPress?: () => void
+    coverColorsSource?: AndroidImageColors | null
+    coverColorsByLuminance?: { color: string; luminance: number; name: string; isLight: boolean }[]
 }
 
 const FloatingPlayer = ({
@@ -27,29 +23,14 @@ const FloatingPlayer = ({
     playerStatus,
     player,
     onFloatingPlayerPress,
+    backgroundColor,
+    lyricsTextColor,
+    titleTextColor,
+    coverColorsSource,
+    coverColorsByLuminance,
+    currentLyric,
 }: FloatingPlayerProps) => {
     if (!songInfo) return null
-
-    const { t } = useTranslation()
-
-    const coverColorsSource = useImageColors(songInfo.cover) as AndroidImageColors | null
-    const { coverColorsByLuminance, titleTextColor, lyricsTextColor } =
-        useCoverColors(coverColorsSource)
-
-    // Deconstructing all color props of the Android platform
-    const { dominant, average, vibrant, darkVibrant, lightVibrant, darkMuted, lightMuted, muted } =
-        coverColorsSource || {}
-
-    // Lyrics display
-    const [currentLyric, setCurrentLyric] = useState('')
-    useEffect(() => {
-        if (playerStatus?.duration !== undefined && playerStatus?.currentTime !== undefined) {
-            setCurrentLyric(
-                syncLyricsProvider(songInfo.lyrics, playerStatus.currentTime) ||
-                    t('floatingPlayer.emptyLyrics'),
-            )
-        }
-    }, [playerStatus?.currentTime, songInfo.lyrics])
 
     // Play/Pause
     const handlePlayPauseButton = () => {
@@ -89,8 +70,8 @@ const FloatingPlayer = ({
                     width: '100%',
                 }}
             >
-                {/*<ColorsDisplay coverColors={coverColorsSource} />*/}
-                {/*<SortedColorsDisplay colors={coverColorsByLuminance} />*/}
+                {/*{coverColorsSource && <ColorsDisplay coverColors={coverColorsSource} />}*/}
+                {/*{coverColorsByLuminance && <SortedColorsDisplay colors={coverColorsByLuminance} />}*/}
 
                 <View
                     style={{
@@ -108,7 +89,9 @@ const FloatingPlayer = ({
                         theme={{
                             colors: {
                                 elevation: {
-                                    level4: dominant ? dominant : paperThemeColors.elevation.level4,
+                                    level4: backgroundColor
+                                        ? backgroundColor
+                                        : paperThemeColors.elevation.level4,
                                 },
                             },
                         }}

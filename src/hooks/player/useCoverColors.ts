@@ -1,13 +1,26 @@
 // Function to calculate color luminance
 import { AndroidImageColors } from 'react-native-image-colors/build/types'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useMemo, useState } from 'react'
 import { colors } from '@/constants/tokens'
 import { calculateLuminance } from '@/utils/colors'
+import useImageColors from '@/hooks/player/useImageColors'
+import { musicPlayerContext } from '@/app/_layout'
 
-const useCoverColors = (coverColors: AndroidImageColors | null) => {
+const useCoverColors = () => {
+    const musicPlayer = useContext(musicPlayerContext)
+    if (!musicPlayer) {
+        throw new Error('useContext Fail')
+    }
+    const { songInfoPlaying } = musicPlayer
+
+    const coverColorsSource = useImageColors(
+        songInfoPlaying.id,
+        songInfoPlaying.cover,
+    ) as AndroidImageColors | null
+
     // Deconstruct all color properties of the Android platform
     const { dominant, average, vibrant, darkVibrant, lightVibrant, darkMuted, lightMuted, muted } =
-        coverColors || {}
+        coverColorsSource || {}
 
     // Create a state to store colors sorted by luminance
     const [coverColorsByLuminance, setCoverColorsByLuminance] = useState<
@@ -17,6 +30,7 @@ const useCoverColors = (coverColors: AndroidImageColors | null) => {
     const [titleTextColor, setTitleTextColor] = useState('')
     const [lyricsTextColor, setLyricsTextColor] = useState('')
 
+    // 只有当颜色数据改变时才重新计算
     useEffect(() => {
         // Create color array and calculate luminance
         const colorsWithLuminance = []
@@ -154,8 +168,10 @@ const useCoverColors = (coverColors: AndroidImageColors | null) => {
 
     return {
         coverColorsByLuminance,
+        coverColorsSource,
         titleTextColor,
         lyricsTextColor,
+        backgroundColor: dominant,
     }
 }
 

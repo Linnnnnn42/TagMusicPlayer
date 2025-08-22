@@ -6,11 +6,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 import { Divider } from 'react-native-paper'
 
 type SongsListProps = {
-    mediaLibrary: {
-        loading: boolean
-        length: number
-        loadMusicLibrary: () => void
-    }
+    loading: boolean
     filteredMusicInfoList: SongsListItemProps['song'][]
     visible?: boolean
     songIdPlaying?: string
@@ -18,16 +14,12 @@ type SongsListProps = {
 }
 
 export const SongsList = ({
-    mediaLibrary,
+    loading,
     filteredMusicInfoList,
     visible = true,
     songIdPlaying,
     onSongChange,
 }: SongsListProps) => {
-    const { loading, length, loadMusicLibrary } = {
-        ...mediaLibrary,
-    }
-
     const animation = useRef(new Animated.Value(visible ? 1 : 0)).current
 
     useEffect(() => {

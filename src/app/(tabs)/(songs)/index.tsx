@@ -1,24 +1,35 @@
 import { View } from 'react-native'
 import defaultStyle from '@/styles/style'
 import { SongsList } from '@/components/SongsTab/SongsList'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { colors } from '@/constants/tokens'
 import FloatingSearchBar from '@/components/FloatingSearchBar/FloatingSearchBar'
 import SearchButton from '@/components/FloatingSearchBar/SearchButton'
-import useSongsSearch from '@/hooks/useSongsSearch'
-import useGlobalMusicPlayer from '@/hooks/useGlobalMusicPlayer'
+import useSongsSearch from '@/hooks/songsTab/useSongsSearch'
+import { mediaLibraryContext, musicPlayerContext } from '@/app/_layout'
 
 export default function () {
     // Get global context
-    const { musicPlayer, mediaLibrary } = useGlobalMusicPlayer()
+    const musicPlayer = useContext(musicPlayerContext)
+    const mediaLibrary = useContext(mediaLibraryContext)
+    const loading = mediaLibrary?.loading || false
 
     // Search
-    const songsSearch = useSongsSearch(mediaLibrary)
+    const songsSearch = useSongsSearch()
     const { searchContent, setSearchContent, searchFilters, setSearchFilters, filteredSongs } =
-        songsSearch
+        songsSearch || {
+            searchContent: '',
+            setSearchContent: () => {},
+            searchFilters: [],
+            setSearchFilters: () => {},
+            filteredSongs: [],
+        }
 
     // Player
+    if (!musicPlayer) {
+        throw new Error('useContext Fail')
+    }
     const { songIdPlaying, handleSongChange } = musicPlayer
 
     // UI
@@ -44,8 +55,8 @@ export default function () {
                     />
                     <SearchButton visible={isSearchBarVisible} onPress={setIsSearchBarVisible} />
                     <SongsList
-                        mediaLibrary={mediaLibrary}
-                        filteredMusicInfoList={filteredSongs}
+                        loading={loading}
+                        filteredMusicInfoList={filteredSongs || []}
                         visible={isSearchBarVisible}
                         songIdPlaying={songIdPlaying}
                         onSongChange={handleSongChange}

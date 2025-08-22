@@ -3,10 +3,24 @@ import { colors, fontSize, fontWeight, tabIcons } from '@/constants/tokens'
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
 import { Pressable, StyleSheet, type ViewProps } from 'react-native'
 import FloatingPlayer from '@/components/FloatingPlayer/FloatingPlayer'
-import useGlobalMusicPlayer from '@/hooks/useGlobalMusicPlayer'
-import React, { useCallback, useEffect, useRef } from 'react'
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import Player, { type PlayerHandle } from '@/app/player'
+import { musicPlayerContext } from '@/app/_layout'
+import useCoverColors from '@/hooks/player/useCoverColors'
+import { MinimalMusicInfo } from '@/utils/getMediaLibraryMMKV'
+import { AudioPlayer, AudioStatus } from 'expo-audio'
+import { syncLyricsProvider } from '@/hooks/player/syncLyricsProvider'
+
+export type PlayerProps = {
+    songInfo?: MinimalMusicInfo
+    playerStatus?: AudioStatus
+    player?: AudioPlayer
+    currentLyric?: string
+    backgroundColor?: string
+    lyricsTextColor?: string
+    titleTextColor?: string
+}
 
 // Component for ripple effect on Android with customizable ripple color
 const TabBarButton = ({
@@ -25,7 +39,15 @@ const TabBarButton = ({
 // tabBar config
 const tabScreens = [
     {
-        name: '(playlists)',
+        name: '(songs)',
+        title: 'tabs.songs',
+        icon: {
+            name: tabIcons.songs as keyof typeof MaterialCommunityIcons.glyphMap,
+            size: 28,
+        },
+    },
+    {
+        name: 'playing',
         title: 'tabs.playing',
         icon: {
             name: tabIcons.playlists as keyof typeof MaterialCommunityIcons.glyphMap,
@@ -48,14 +70,6 @@ const tabScreens = [
             size: 26,
         },
     },
-    {
-        name: 'songs',
-        title: 'tabs.songs',
-        icon: {
-            name: tabIcons.songs as keyof typeof MaterialCommunityIcons.glyphMap,
-            size: 28,
-        },
-    },
 ] as const
 
 export default function TabsLayout() {
@@ -63,9 +77,31 @@ export default function TabsLayout() {
     const { t } = useTranslation()
 
     // Get global context
-    const { musicPlayer } = useGlobalMusicPlayer()
+    const musicPlayer = useContext(musicPlayerContext)
+    if (!musicPlayer) {
+        throw new Error('useContext Fail')
+    }
     const { songInfoPlaying, playerStatus, player, playerModeSetter } = musicPlayer
-    
+    // Get colors
+    const {
+        coverColorsSource,
+        coverColorsByLuminance,
+        titleTextColor,
+        lyricsTextColor,
+        backgroundColor,
+    } = useCoverColors()
+
+    // Get lyrics
+    const [currentLyric, setCurrentLyric] = useState('')
+    useEffect(() => {
+        if (playerStatus?.duration !== undefined && playerStatus?.currentTime !== undefined) {
+            setCurrentLyric(
+                syncLyricsProvider(songInfoPlaying.lyrics, playerStatus.currentTime) ||
+                    t('player.emptyLyrics'),
+            )
+        }
+    }, [playerStatus?.currentTime, songInfoPlaying.lyrics])
+
     // Player ref
     const playerRef = useRef<PlayerHandle>(null)
 
@@ -114,8 +150,23 @@ export default function TabsLayout() {
                 playerStatus={playerStatus}
                 player={player}
                 onFloatingPlayerPress={() => playerRef.current?.openPlayer()}
+                currentLyric={currentLyric}
+                backgroundColor={backgroundColor}
+                lyricsTextColor={lyricsTextColor}
+                titleTextColor={titleTextColor}
+                coverColorsSource={coverColorsSource}
+                coverColorsByLuminance={coverColorsByLuminance}
             />
-            <Player ref={playerRef} />
+            <Player
+                ref={playerRef}
+                backgroundColor={backgroundColor}
+                lyricsTextColor={lyricsTextColor}
+                titleTextColor={titleTextColor}
+                songInfo={songInfoPlaying}
+                playerStatus={playerStatus}
+                player={player}
+                currentLyric={currentLyric}
+            />
         </>
     )
 }
