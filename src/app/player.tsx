@@ -24,6 +24,9 @@ export type PlayerHandle = {
 
 type BottomPlayerProps = PlayerProps & {
     ref?: React.Ref<PlayerHandle>
+    previousSongId: string
+    nextSongId: string
+    handleSongChange: (songId: string) => void
 }
 
 const Player = ({
@@ -35,6 +38,9 @@ const Player = ({
     lyricsTextColor,
     songInfo,
     currentLyric,
+    previousSongId,
+    nextSongId,
+    handleSongChange,
 }: BottomPlayerProps) => {
     const { t } = useTranslation()
 
@@ -297,7 +303,10 @@ const Player = ({
                             paddingVertical: 40,
                         }}
                     >
-                        <TouchableOpacity style={styles.playPauseButton}>
+                        <TouchableOpacity
+                            style={styles.playPauseButton}
+                            onPress={() => handleSongChange(previousSongId)}
+                        >
                             <FontAwesome6
                                 style={{
                                     color: titleTextColor ? titleTextColor : colors.text,
@@ -327,7 +336,10 @@ const Player = ({
                             />
                         </TouchableOpacity>
 
-                        <TouchableOpacity style={styles.playPauseButton}>
+                        <TouchableOpacity
+                            style={styles.playPauseButton}
+                            onPress={() => handleSongChange(nextSongId)}
+                        >
                             <FontAwesome6
                                 style={{
                                     color: titleTextColor ? titleTextColor : colors.text,

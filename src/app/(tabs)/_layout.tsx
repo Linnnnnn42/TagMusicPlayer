@@ -81,7 +81,15 @@ export default function TabsLayout() {
     if (!musicPlayer) {
         throw new Error('useContext Fail')
     }
-    const { songInfoPlaying, playerStatus, player, playerModeSetter } = musicPlayer
+    const {
+        songInfoPlaying,
+        playerStatus,
+        player,
+        playerModeSetter,
+        handleSongChange,
+        nextSongId,
+        previousSongId,
+    } = musicPlayer
     // Get colors
     const {
         coverColorsSource,
@@ -166,6 +174,9 @@ export default function TabsLayout() {
                 playerStatus={playerStatus}
                 player={player}
                 currentLyric={currentLyric}
+                nextSongId={nextSongId || ''}
+                previousSongId={previousSongId || ''}
+                handleSongChange={handleSongChange}
             />
         </>
     )
