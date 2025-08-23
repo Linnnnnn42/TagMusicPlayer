@@ -6,6 +6,7 @@ import TabHeader from '@/components/TabHeader'
 import FloatingSearchBar from '@/components/FloatingSearchBar/FloatingSearchBar'
 import { useState } from 'react'
 import SearchButton from '@/components/FloatingSearchBar/SearchButton'
+import { i18nTokens } from '@/i18n/i18nTokens'
 
 export default function PlaylistsTab() {
     const [visible, setVisible] = useState(false)
@@ -20,7 +21,7 @@ export default function PlaylistsTab() {
                 }}
             >
                 <TabHeader // height: '14%'
-                    tabTitle={'tabs.playing'}
+                    tabTitle={i18nTokens.tabs.playing}
                     iconName={'playlists'}
                     rotate={'-15deg'}
                     translateY={-35}

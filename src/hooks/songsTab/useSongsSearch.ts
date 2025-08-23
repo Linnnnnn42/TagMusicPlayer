@@ -1,15 +1,13 @@
 import { useContext, useEffect, useMemo, useState } from 'react'
-import { byArtist, byLyrics, byTitle } from '@/components/FloatingSearchBar/FloatingSearchBar'
 import { useTranslation } from 'react-i18next'
 import { TFunction } from 'i18next'
-import useGetMediaLibrary from '@/hooks/useGetMediaLibrary'
 import { mediaLibraryContext } from '@/app/_layout'
 import { MinimalMusicInfo } from '@/utils/getMediaLibraryMMKV'
 
 const searchFilter = (
     songs: MinimalMusicInfo[] | undefined,
     searchContent: string,
-    searchFilters: string[],
+    searchFilters: number[],
     t: TFunction<'translation', undefined>,
 ) => {
     let filteredSongList = songs ? [...songs] : []
@@ -22,14 +20,13 @@ const searchFilter = (
             // Check each filter and return true for any match
             return searchFilters.some((filter) => {
                 switch (filter) {
-                    case t(byTitle):
+                    case 0:
                         return songTitleFilter(searchContent)(song)
-                    case t(byArtist):
+                    case 1:
                         return songArtistFilter(searchContent)(song)
-                    case t(byLyrics):
+                    case 2:
                         return songLyricsFilter(searchContent)(song)
                     default:
-                        console.log(filter, t(byTitle))
                         return false
                 }
             })
@@ -60,7 +57,7 @@ const useSongsSearch = () => {
 
     // Search
     const [searchContent, setSearchContent] = useState('')
-    const [searchFilters, setSearchFilters] = useState<string[]>([t(byTitle)])
+    const [searchFilters, setSearchFilters] = useState<number[]>([0])
     const filteredSongs = useMemo(() => {
         if (!searchContent) return minimalMusicInfoList
 

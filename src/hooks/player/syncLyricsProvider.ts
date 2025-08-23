@@ -32,7 +32,6 @@ export const syncLyricsProvider = (
             }
         }
 
-        // Output the currently playing lyrics to the console
         if (currentLyric) {
             if (currentLyric.text === '') {
                 return '........'

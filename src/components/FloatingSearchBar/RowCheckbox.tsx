@@ -6,8 +6,8 @@ import { useEffect, useState } from 'react'
 interface RowCheckboxProps {
     items?: string[]
     center?: boolean
-    searchFilters?: string[]
-    onSelectionChange?: (selectedItems: string[]) => void
+    searchFilters?: number[]
+    onSelectionChange?: (selectedItems: number[]) => void
 }
 
 const RowCheckBox = ({
@@ -16,24 +16,24 @@ const RowCheckBox = ({
     searchFilters = [],
     onSelectionChange,
 }: RowCheckboxProps) => {
-    const initialFilters = searchFilters.length > 0 ? searchFilters : [items[0]]
+    const initialFilters = searchFilters.length > 0 ? searchFilters : [0]
 
     // UI
     const [disableOne, setDisableOne] = useState(false)
 
     const clampedItems = items.length > 0 ? items.slice(0, 5) : ['Default']
-    const handleToggle = (label: string) => {
+    const handleToggle = (index: number) => {
         let newSelection
         // Normal Checkbox Logic
-        if (initialFilters.includes(label)) {
-            newSelection = initialFilters.filter((item) => item !== label)
+        if (initialFilters.includes(index)) {
+            newSelection = initialFilters.filter((item) => item !== index)
         } else {
-            newSelection = [...initialFilters, label]
+            newSelection = [...initialFilters, index]
         }
 
         // Prevent 1st one to be disabled when newSelection.length === 0
         if (newSelection.length === 0) {
-            newSelection = [...newSelection, label]
+            newSelection = [...newSelection, index]
             setDisableOne(true)
         } else {
             setDisableOne(false)
@@ -45,7 +45,7 @@ const RowCheckBox = ({
     return (
         <View style={[styles.container, center && styles.centerContainer]}>
             {clampedItems.map((label, index) => {
-                const checked = initialFilters.includes(label)
+                const checked = initialFilters.includes(index)
                 const disabled = disableOne && checked
                 // console.log(index, checked, label)
                 // console.log(initialFilters)
@@ -54,14 +54,14 @@ const RowCheckBox = ({
                     <View key={index} style={styles.checkboxContainer}>
                         <TouchableOpacity
                             style={styles.checkboxWrapper}
-                            onPress={() => handleToggle(label)}
+                            onPress={() => handleToggle(index)}
                             activeOpacity={0.7}
                             disabled={disabled}
                         >
                             <Checkbox
                                 status={checked ? 'checked' : 'unchecked'}
                                 color={colors.primary}
-                                onPress={() => handleToggle(label)}
+                                onPress={() => handleToggle(index)}
                                 disabled={disabled}
                             />
                             <Text style={[styles.label, disabled && styles.disabledLabel]}>

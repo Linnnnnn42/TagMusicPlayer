@@ -3,6 +3,7 @@ import defaultStyle from '@/styles/style'
 import { colors } from '@/constants/tokens'
 import TabHeader from '@/components/TabHeader'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { i18nTokens } from '@/i18n/i18nTokens'
 
 export default function FavoritesTab() {
     return (
@@ -15,7 +16,7 @@ export default function FavoritesTab() {
                 }}
             >
                 <TabHeader
-                    tabTitle={'tabs.favorites'}
+                    tabTitle={i18nTokens.tabs.favorites}
                     iconName={'favorites'}
                     rotate={'-15deg'}
                     translateY={-35}

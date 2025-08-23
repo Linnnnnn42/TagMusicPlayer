@@ -5,20 +5,17 @@ import { View, Text, StyleSheet, Animated } from 'react-native'
 import RowCheckBox from '@/components/FloatingSearchBar/RowCheckbox'
 import * as React from 'react'
 import { useTranslation } from 'react-i18next'
+import { i18nTokens } from '@/i18n/i18nTokens'
 
 type FloatingSearchBarProps = {
     visible?: boolean
     hideOffset?: number
     searchContent?: string
     onSearchChange?: (text: string) => void
-    searchFilters?: string[]
-    onSelectionChange?: (selections: string[]) => void
+    searchFilters?: number[]
+    onSelectionChange?: (selections: number[]) => void
     ref?: React.Ref<{ focus: () => void }>
 }
-
-export const byTitle = 'floatingSearchBar.filters.title'
-export const byArtist = 'floatingSearchBar.filters.artist'
-export const byLyrics = 'floatingSearchBar.filters.lyrics'
 
 const FloatingSearchBar = ({
     visible = true,
@@ -108,14 +105,18 @@ const FloatingSearchBar = ({
                         <Searchbar
                             ref={searchbarRef}
                             value={searchContent}
-                            placeholder={t('floatingSearchBar.placeholder')}
+                            placeholder={t(i18nTokens.floatingSearchBar.placeholder)}
                             searchAccessibilityLabel={'Find in songs'}
                             mode={'bar'}
                             onChangeText={onSearchChange}
                             theme={{ colors: { onSurfaceVariant: 'black' } }}
                         />
                         <RowCheckBox
-                            items={[t(byTitle), t(byArtist), t(byLyrics)]}
+                            items={[
+                                t(i18nTokens.floatingSearchBar.filters.title),
+                                t(i18nTokens.floatingSearchBar.filters.artist),
+                                t(i18nTokens.floatingSearchBar.filters.lyrics),
+                            ]}
                             center={true}
                             searchFilters={searchFilters}
                             onSelectionChange={onSelectionChange}

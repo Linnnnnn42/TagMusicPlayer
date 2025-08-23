@@ -16,6 +16,7 @@ import { useTranslation } from 'react-i18next'
 import { Slider as SliderAwesome } from 'react-native-awesome-slider'
 import { useSharedValue } from 'react-native-reanimated'
 import { FontAwesome6 } from '@expo/vector-icons'
+import { i18nTokens } from '@/i18n/i18nTokens'
 
 export type PlayerHandle = {
     openPlayer: () => void
@@ -185,8 +186,8 @@ const Player = ({
                         scroll={false}
                     >
                         {songInfo?.title
-                            ? `${songInfo?.title || t('player.emptyTitle')}`
-                            : t('player.emptyTitle')}
+                            ? `${songInfo?.title || t(i18nTokens.player.emptyTitle)}`
+                            : t(i18nTokens.player.emptyTitle)}
                     </TextTicker>
                     {/*Artist*/}
                     <TextTicker
@@ -204,8 +205,8 @@ const Player = ({
                         scroll={false}
                     >
                         {songInfo?.artist
-                            ? `${songInfo?.artist || t('player.emptyArtist')}`
-                            : t('player.emptyArtist')}
+                            ? `${songInfo?.artist || t(i18nTokens.player.emptyArtist)}`
+                            : t(i18nTokens.player.emptyArtist)}
                     </TextTicker>
                     {/*Cover*/}
                     {songInfo?.cover ? (

@@ -4,6 +4,7 @@ import { colors, fontWeight } from '@/constants/tokens'
 import * as React from 'react'
 import { MinimalMusicInfo } from '@/utils/getMediaLibraryMMKV'
 import { useTranslation } from 'react-i18next'
+import { i18nTokens } from '@/i18n/i18nTokens'
 
 type FloatingPlayerTextProps = {
     songInfoText?: Pick<MinimalMusicInfo, 'title' | 'lyrics'>
@@ -47,8 +48,8 @@ export const FloatingPlayerText = ({
                     scroll={false}
                 >
                     {songInfoText
-                        ? `${songInfoText.title || t('player.emptyTitle')}`
-                        : t('player.emptyTitle')}
+                        ? `${songInfoText.title || t(i18nTokens.player.emptyTitle)}`
+                        : t(i18nTokens.player.emptyTitle)}
                 </TextTicker>
             </View>
             <View>

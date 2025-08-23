@@ -11,6 +11,7 @@ import useCoverColors from '@/hooks/player/useCoverColors'
 import { MinimalMusicInfo } from '@/utils/getMediaLibraryMMKV'
 import { AudioPlayer, AudioStatus } from 'expo-audio'
 import { syncLyricsProvider } from '@/hooks/player/syncLyricsProvider'
+import { i18nTokens } from '@/i18n/i18nTokens'
 
 export type PlayerProps = {
     songInfo?: MinimalMusicInfo
@@ -105,7 +106,7 @@ export default function TabsLayout() {
         if (playerStatus?.duration !== undefined && playerStatus?.currentTime !== undefined) {
             setCurrentLyric(
                 syncLyricsProvider(songInfoPlaying.lyrics, playerStatus.currentTime) ||
-                    t('player.emptyLyrics'),
+                    t(i18nTokens.player.emptyLyrics),
             )
         }
     }, [playerStatus?.currentTime, songInfoPlaying.lyrics])
