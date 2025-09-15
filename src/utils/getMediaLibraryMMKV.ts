@@ -3,46 +3,15 @@ import { Asset } from 'expo-media-library'
 import { Directory, File } from 'expo-file-system/next'
 import { IAudioMetadata, ILyricsTag, IPicture, parseBuffer } from 'music-metadata'
 import { uint8ArrayToBase64 } from 'uint8array-extras'
-import { storage } from '@/database/constructor'
-import { keys } from '@/database/keys'
-
-interface CachedMusicInfo {
-    musicInfoList: MusicInfo[]
-    timestamp: number
-}
-
-interface CachedAssetsInfo {
-    assets: Asset[]
-    cachedOnlyMusicDir: boolean
-    timestamp: number
-}
-
-const hash = require('object-hash')
-
-export type MusicInfo = Pick<
-    IAudioMetadata['common'],
-    'album' | 'artist' | 'artists' | 'title' | 'lyrics' | 'bpm' | 'grouping'
-> & {
-    id: string
-    albumId: string | undefined
-    duration: number
-    filename: string
-    modificationTime: number
-    uri: string
-    parentDir: Directory
-    cover: string | undefined
-}
-
-export interface MinimalMusicInfo {
-    id: string
-    title: string
-    artist: string | undefined
-    cover: string | undefined
-    lyrics: ILyricsTag[] | undefined
-    allLyricsLines: string | undefined
-    filename: string
-    uri: string
-}
+import {
+    addOrUpdateSongs,
+    addOrUpdateMinimalSongs,
+    getAllSongs,
+    getAllMinimalSongs,
+    getSongCount,
+    getMinimalSongCount,
+} from '@/database/songStorage'
+import { MusicInfo, MinimalMusicInfo } from '@/database/types'
 
 export interface MusicInfoForList {}
 export interface MusicInfoForPlayer {}
@@ -54,10 +23,8 @@ export default class LocalMediaLibraryMMKV {
         // Get audio assets
         const result = await MediaLibrary.getAssetsAsync({
             mediaType: 'audio',
-            first: 1000, // Limit to first 100 songs
+            first: 1000, // Limit to first 1000 songs
         })
-
-        // const filteredAssets = this.assetsFilterMusicLibDirString(result.assets)
 
         return result.assets
     }
@@ -125,7 +92,6 @@ export default class LocalMediaLibraryMMKV {
             const fileBytes = file.bytes()
 
             const result = await parseBuffer(fileBytes, {
-                // mimeType: 'audio',
                 size: file.size !== null ? file.size : undefined,
                 path: file.name,
             })
@@ -257,11 +223,55 @@ export default class LocalMediaLibraryMMKV {
         }
     }
 
-    async getMediaLib(onlyMusicDir: boolean) {
-        // Use MMKV key names instead of file paths
-        const MUSIC_INFO_KEY = keys.MUSIC_INFO_KEY
-        const ASSETS_INFO_KEY = keys.ASSETS_INFO_KEY
+    /**
+     * Check if cache is valid
+     * @param realtimeAssets Real-time assets
+     * @param onlyMusicDir Whether only music directory is being used
+     * @returns Whether cache is valid
+     */
+    private isCacheValid(realtimeAssets: Asset[], onlyMusicDir: boolean): boolean {
+        console.log('Validating cache method...')
 
+        // Check if data exists
+        const songCount = getSongCount()
+        const minimalSongCount = getMinimalSongCount()
+
+        if (songCount === 0 || minimalSongCount === 0) {
+            console.log('Cache is empty')
+            return false
+        }
+
+        // Compare asset count
+        if (songCount !== realtimeAssets.length) {
+            console.log(
+                `Song count mismatch: cache=${songCount}, realtime=${realtimeAssets.length}`,
+            )
+            return false
+        }
+
+        // Check if any assets have been modified by comparing modification times
+        const allSongs = getAllMinimalSongs()
+        const songMap = new Map(allSongs.map((song) => [song.id, song]))
+
+        for (const realtimeAsset of realtimeAssets) {
+            const cachedSong = songMap.get(realtimeAsset.id)
+            if (!cachedSong) {
+                console.log(`Song not found in cache: ${realtimeAsset.id}`)
+                return false
+            }
+
+            // Compare modification time
+            if (cachedSong.modificationTime !== realtimeAsset.modificationTime) {
+                console.log(`Modification time mismatch for ${realtimeAsset.id}`)
+                return false
+            }
+        }
+
+        console.log(`Cache validation passed, ${songCount} songs in total`)
+        return true
+    }
+
+    async getMediaLib(onlyMusicDir: boolean) {
         try {
             // Get current media library information
             let realtimeAssets = await this.getAudioAssets()
@@ -271,141 +281,51 @@ export default class LocalMediaLibraryMMKV {
                 realtimeAssets = this.assetsFilterMusicLibDirString(realtimeAssets)
             }
 
-            // Check if cache exists in MMKV
-            const hasMusicInfoCache = storage.contains(MUSIC_INFO_KEY)
-            const hasAssetsInfoCache = storage.contains(ASSETS_INFO_KEY)
+            // Check if cache is valid
+            const hasData = getSongCount() > 0
+            if (hasData && this.isCacheValid(realtimeAssets, onlyMusicDir)) {
+                console.log('Using cached music library, Loading...')
 
-            if (hasMusicInfoCache && hasAssetsInfoCache) {
-                try {
-                    // Read cached assets data from MMKV
-                    const cachedAssetsDataString = storage.getString(ASSETS_INFO_KEY)
-                    if (cachedAssetsDataString) {
-                        const cachedAssetsData = JSON.parse(cachedAssetsDataString)
+                const musicInfoList = getAllSongs()
+                const minimalMusicInfoList = getAllMinimalSongs()
 
-                        let { assets: cachedAssets, cachedOnlyMusicDir } = cachedAssetsData
-
-                        // If only want music folder, add filter
-                        if (onlyMusicDir) {
-                            cachedAssets = this.assetsFilterMusicLibDirString(cachedAssets)
-                        }
-
-                        if (cachedOnlyMusicDir !== onlyMusicDir) {
-                            // Setting changed, update cache
-                            console.log('onlyMusicDir setting changed')
-                        } else {
-                            // Check if cache is valid (compare asset count and modification time)
-                            if (this.isCacheValid(cachedAssets, realtimeAssets, false)) {
-                                console.log('Using cached music library, Loading...')
-                                // Read cached music info data from MMKV
-                                const cachedDataString = storage.getString(MUSIC_INFO_KEY)
-                                if (cachedDataString) {
-                                    const cachedData = JSON.parse(
-                                        cachedDataString,
-                                    ) as CachedMusicInfo
-
-                                    // Verify data structure integrity
-                                    if (!cachedData || !cachedData.musicInfoList) {
-                                        console.log('Cached data structure invalid')
-                                        return undefined
-                                    }
-
-                                    // Create minimal info list and ensure correct type
-                                    const minimalMusicInfoList = this.createMinimalMusicInfoList(
-                                        cachedData.musicInfoList,
-                                    )
-
-                                    // Return explicitly typed response
-                                    return {
-                                        musicInfoList: cachedData.musicInfoList as MusicInfo[],
-                                        minimalMusicInfoList: minimalMusicInfoList,
-                                        length: realtimeAssets.length,
-                                    }
-                                }
-                            }
-                        }
+                // Verify data integrity
+                if (!musicInfoList || !minimalMusicInfoList || musicInfoList.length === 0) {
+                    console.log('Cached data structure invalid')
+                    // Fall back to re-fetching
+                } else {
+                    return {
+                        musicInfoList,
+                        minimalMusicInfoList,
+                        length: realtimeAssets.length,
                     }
-                } catch (parseError) {
-                    console.log('Failed to parse cache, updating...', parseError)
                 }
             }
 
-            if (hasMusicInfoCache && hasAssetsInfoCache) {
-                // Cache outdated
-                console.log('Cache outdated, updating...')
-            } else {
-                // Cache does not exist
-                console.log('Init cache, updating...')
-            }
+            console.log('Cache outdated or missing, updating...')
 
             // Cache does not exist or expired, re-fetch music information
             const musicInfoListPromises = await this.getAllMusicInfo(realtimeAssets)
             const musicInfoList = await Promise.all(musicInfoListPromises)
-            const timestamp = Date.now()
 
-            const cacheData: CachedMusicInfo = {
-                musicInfoList: musicInfoList,
-                timestamp: timestamp,
-            }
-
-            const cacheAssetsData: CachedAssetsInfo = {
-                assets: realtimeAssets,
-                cachedOnlyMusicDir: onlyMusicDir,
-                timestamp: timestamp,
-            }
-
-            // Write cache using MMKV
-            storage.set(MUSIC_INFO_KEY, JSON.stringify(cacheData))
-            storage.set(ASSETS_INFO_KEY, JSON.stringify(cacheAssetsData))
-
+            // Create minimal info list
             const minimalMusicInfoList = this.createMinimalMusicInfoList(musicInfoList)
+
+            // Store data
+            console.log('Storing music library...')
+            addOrUpdateSongs(musicInfoList)
+            addOrUpdateMinimalSongs(minimalMusicInfoList)
 
             console.log('Music library cache updated')
 
             return {
                 musicInfoList,
-                minimalMusicInfoList: minimalMusicInfoList,
+                minimalMusicInfoList,
                 length: realtimeAssets.length,
             }
         } catch (error) {
             console.error('Error in getMediaLib:', error)
             throw error
-        }
-    }
-
-    /**
-     * Check if cache is valid
-     * @param cachedAssets Cached assets
-     * @param realtimeAssets Real-time assets
-     * @param useHash Whether to use hash for validation
-     * @returns Whether cache is valid
-     */
-    private isCacheValid(cachedAssets: any[], realtimeAssets: Asset[], useHash: boolean): boolean {
-        console.log('Validating...')
-        if (useHash) {
-            console.log('Use hash')
-            return hash(cachedAssets) === hash(realtimeAssets)
-        } else {
-            // Simple comparison of asset count
-            if (cachedAssets.length !== realtimeAssets.length) {
-                return false
-            }
-
-            // Check asset modification time
-            for (let i = 0; i < realtimeAssets.length; i++) {
-                // console.log(i)
-                const cachedAsset = cachedAssets[i]
-                const realtimeAsset = realtimeAssets[i]
-
-                // Compare ID and modification time
-                if (
-                    cachedAsset.id !== realtimeAsset.id ||
-                    cachedAsset.modificationTime !== realtimeAsset.modificationTime
-                ) {
-                    return false
-                }
-            }
-
-            return true
         }
     }
 
@@ -420,6 +340,7 @@ export default class LocalMediaLibraryMMKV {
             allLyricsLines: this.concatAllLyricsLines(item.lyrics?.[0]),
             filename: item.filename,
             uri: item.uri,
+            modificationTime: item.modificationTime,
         }))
     }
 

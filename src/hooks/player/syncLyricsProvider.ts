@@ -1,4 +1,4 @@
-import { MinimalMusicInfo } from '@/utils/getMediaLibraryMMKV'
+import { MinimalMusicInfo } from '@/database/types'
 import { AudioStatus } from 'expo-audio'
 
 export const syncLyricsProvider = (

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
-import { MinimalMusicInfo } from '@/utils/getMediaLibraryMMKV'
 import { useAudioPlayer, useAudioPlayerStatus, setAudioModeAsync } from 'expo-audio'
 import useGetMediaLibrary from '@/hooks/useGetMediaLibrary'
+import { MinimalMusicInfo } from '@/database/types'
 
 const useGetMusicPlayer = (mediaLibrary: ReturnType<typeof useGetMediaLibrary>) => {
     // Get Data
@@ -18,25 +18,31 @@ const useGetMusicPlayer = (mediaLibrary: ReturnType<typeof useGetMediaLibrary>) 
         allLyricsLines: undefined,
         filename: '',
         uri: '',
+        modificationTime: 0,
     })
     const [songIdPlaying, setSongIdPlaying] = useState<string>('')
     const [previousSongId, setPreviousSongId] = useState<string | undefined>(undefined)
     const [nextSongId, setNextSongId] = useState<string | undefined>(undefined)
-    
+
     const handleSongChange = (songId: string) => {
         setSongIdPlaying(songId)
         const minimalSongInfo = minimalMusicInfoList.find((song) => song.id === songId)
         if (minimalSongInfo) {
             setSongInfoPlaying(minimalSongInfo)
-            
+
             // Find previous and next song IDs
             const currentIndex = minimalMusicInfoList.findIndex((song) => song.id === songId)
             if (currentIndex !== -1) {
                 const prevIndex = currentIndex > 0 ? currentIndex - 1 : undefined
-                const nextIndex = currentIndex < minimalMusicInfoList.length - 1 ? currentIndex + 1 : undefined
-                
-                setPreviousSongId(prevIndex !== undefined ? minimalMusicInfoList[prevIndex].id : undefined)
-                setNextSongId(nextIndex !== undefined ? minimalMusicInfoList[nextIndex].id : undefined)
+                const nextIndex =
+                    currentIndex < minimalMusicInfoList.length - 1 ? currentIndex + 1 : undefined
+
+                setPreviousSongId(
+                    prevIndex !== undefined ? minimalMusicInfoList[prevIndex].id : undefined,
+                )
+                setNextSongId(
+                    nextIndex !== undefined ? minimalMusicInfoList[nextIndex].id : undefined,
+                )
             } else {
                 setPreviousSongId(undefined)
                 setNextSongId(undefined)

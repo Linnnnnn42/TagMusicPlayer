@@ -1,7 +1,8 @@
 import * as MediaLibrary from 'expo-media-library'
 import { useEffect, useState } from 'react'
 import { Alert } from 'react-native'
-import LocalMediaLibraryMMKV, { MinimalMusicInfo, MusicInfo } from '@/utils/getMediaLibraryMMKV'
+import LocalMediaLibraryMMKV from '@/utils/getMediaLibraryMMKV'
+import { MusicInfo, MinimalMusicInfo } from '@/database/types'
 
 const useGetMediaLibrary = () => {
     const [permissionResponse, requestPermission] = MediaLibrary.usePermissions({
