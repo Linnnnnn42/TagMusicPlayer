@@ -1,21 +1,21 @@
 {
-  "tabs": {
-    "playing": "Playing",
-    "tags": "Tags",
-    "favorites": "Favorites",
-    "songs": "Songs"
-  },
-  "player": {
-    "emptyTitle": "Unknown title",
-    "emptyArtist": "Unknown artist",
-    "emptyLyrics": "No lyrics available"
-  },
-  "floatingSearchBar": {
-    "placeholder": "Find in songs",
-    "filters": {
-      "title": "Title",
-      "artist": "Artist",
-      "lyrics": "Lyrics"
+    "tabs": {
+        "playing": "Playing",
+        "tags": "Tags",
+        "favorites": "Favorites",
+        "songs": "Songs"
+    },
+    "player": {
+        "emptyTitle": "Unknown title",
+        "emptyArtist": "Unknown artist",
+        "emptyLyrics": "No lyrics available"
+    },
+    "floatingSearchBar": {
+        "placeholder": "Find in songs",
+        "filters": {
+            "title": "Title",
+            "artist": "Artist",
+            "lyrics": "Lyrics"
+        }
     }
-  }
 }

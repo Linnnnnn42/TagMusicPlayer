@@ -1,42 +1,45 @@
 {
-  "expo": {
-    "name": "music-app",
-    "slug": "music-app",
-    "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./assets/images/icon-1.png",
-    "userInterfaceStyle": "light",
-    "newArchEnabled": true,
-    "scheme": "tag-music",
-    "ios": {
-      "supportsTablet": true
-    },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon-1.png",
-        "backgroundColor": "#ffffff"
-      },
-      "edgeToEdgeEnabled": true,
-      "package": "com.tag.music.player"
-    },
-    "web": {
-      "favicon": "./assets/images/favicon.png"
-    },
-    "plugins": [
-      "expo-router",
-      ["expo-localization",{
-        "supportedLocales": {
-          "android": ["en", "zh"]
-        }
-      }],
-      [
-        "expo-media-library",
-        {
-          "isAccessMediaLocationEnabled": false
-        }
-      ],
-      "expo-audio",
-      ["react-native-bootsplash", { "assetsDir": "assets/bootsplash" }]
-    ]
-  }
+    "expo": {
+        "name": "music-app",
+        "slug": "music-app",
+        "version": "1.0.0",
+        "orientation": "portrait",
+        "icon": "./assets/images/icon-1.png",
+        "userInterfaceStyle": "light",
+        "newArchEnabled": true,
+        "scheme": "tag-music",
+        "ios": {
+            "supportsTablet": true
+        },
+        "android": {
+            "adaptiveIcon": {
+                "foregroundImage": "./assets/images/adaptive-icon-1.png",
+                "backgroundColor": "#ffffff"
+            },
+            "edgeToEdgeEnabled": true,
+            "package": "com.tag.music.player"
+        },
+        "web": {
+            "favicon": "./assets/images/favicon.png"
+        },
+        "plugins": [
+            "expo-router",
+            [
+                "expo-localization",
+                {
+                    "supportedLocales": {
+                        "android": ["en", "zh"]
+                    }
+                }
+            ],
+            [
+                "expo-media-library",
+                {
+                    "isAccessMediaLocationEnabled": false
+                }
+            ],
+            "expo-audio",
+            ["react-native-bootsplash", { "assetsDir": "assets/bootsplash" }]
+        ]
+    }
 }

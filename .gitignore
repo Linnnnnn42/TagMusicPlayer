@@ -45,3 +45,8 @@ yarn-error.*
 *.tar
 *.zip
 *.7z
+
+# Ignore all markdown files except README files
+*.md
+!README.md
+!README-zh.md
