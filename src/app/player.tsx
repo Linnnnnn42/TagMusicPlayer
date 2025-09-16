@@ -384,6 +384,8 @@ const styles = StyleSheet.create({
         verticalAlign: 'middle',
         textAlignVertical: 'center',
         textAlign: 'center',
+        width: 30,
+        height: 30,
     },
 })
 
