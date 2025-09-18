@@ -1,7 +1,24 @@
 {
+    "alert": {
+        "errorTitle": "Error",
+        "cancelButtonText": "Cancel",
+        "deleteButtonText": "Delete"
+    },
     "tabs": {
         "playing": "Playing",
         "tags": "Tags",
+        "tagsContent": {
+            "inputPlaceHolder": "Enter new tag name",
+            "addTagButton": "Add Tag",
+            "deleteTagTitle": "Delete Tag",
+            "deleteTagMsg": "Are you sure you want to delete the tag \"{{tagName}}\"?",
+            "listEmptyComponent": "No tags yet",
+            "listFooterComponent": "No tags anymore",
+            "errorMsg": {
+                "failToAddTag": "Failed to add tag",
+                "failToDeleteTag": "Failed to delete tag"
+            }
+        },
         "favorites": "Favorites",
         "songs": "Songs"
     },

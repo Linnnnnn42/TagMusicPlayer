@@ -1,15 +1,11 @@
 import { colors, paperThemeColors } from '@/constants/tokens'
 import { Surface } from 'react-native-paper'
-import { View, Text, StyleSheet, Animated, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 import { FloatingPlayerText } from '@/components/FloatingPlayer/FloatingPlayerText'
 import { Image } from 'expo-image'
-import { useEffect, useState } from 'react'
-import { syncLyricsProvider } from '@/hooks/player/syncLyricsProvider'
 import { FontAwesome6 } from '@expo/vector-icons'
 import { AndroidImageColors } from 'react-native-image-colors/build/types'
-import { useTranslation } from 'react-i18next'
-import { ColorsDisplay, SortedColorsDisplay } from '@/components/FloatingUtils/ColorDisplay'
 import { PlayerProps } from '@/app/(tabs)/_layout'
 
 type FloatingPlayerProps = PlayerProps & {

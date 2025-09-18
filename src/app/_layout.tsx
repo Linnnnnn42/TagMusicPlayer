@@ -11,21 +11,25 @@ import BootSplash from 'react-native-bootsplash'
 import { View } from 'react-native'
 import { AnimatedBootSplash } from '@/components/AnimatedBootSplash'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
+import { useTagManagement } from '@/hooks/useTagManagement'
 
 // Setup global context
 export const mediaLibraryContext = createContext<ReturnType<typeof useGetMediaLibrary> | null>(null)
 export const musicPlayerContext = createContext<ReturnType<typeof useGetMusicPlayer> | null>(null)
+export const tagContext = createContext<ReturnType<typeof useTagManagement> | null>(null)
 
 export default function AppLayout() {
     // Setup global context
     const mediaLibrary = useGetMediaLibrary()
+    const { loading: mediaLibraryLoading } = mediaLibrary
     const musicPlayer = useGetMusicPlayer(mediaLibrary)
+    const tagManagement = useTagManagement(mediaLibraryLoading)
+    const { loading: tagManagementLoading } = tagManagement
 
     // Initialization
-    const { loading } = mediaLibrary
     const locales = useRef<Locale[]>([])
     const languageCode = useRef<string>('')
-    const [isI18nLoaded, setIsI18nLoaded] = useState(false)
+    const [i18nLoading, setI18nLoading] = useState(true)
     const [appReady, setAppReady] = useState(false)
     const [splashHidden, setSplashHidden] = useState(false)
 
@@ -45,17 +49,17 @@ export default function AppLayout() {
         initializeI18n()
             .then((r) => console.log('i18 Loaded'))
             .finally(async () => {
-                setIsI18nLoaded(true)
+                setI18nLoading(false)
             })
     }, [])
 
     // Check if all resources are loaded
     useEffect(() => {
-        if (!loading && isI18nLoaded) {
+        if (!mediaLibraryLoading && !i18nLoading && !tagManagementLoading) {
             console.log('All resources loaded, ready to hide splash screen')
             setAppReady(true)
         }
-    }, [loading, isI18nLoaded])
+    }, [mediaLibraryLoading, i18nLoading, tagManagementLoading])
 
     const myTheme = {
         ...DefaultTheme,
@@ -70,13 +74,15 @@ export default function AppLayout() {
         return (
             <musicPlayerContext.Provider value={musicPlayer}>
                 <mediaLibraryContext.Provider value={mediaLibrary}>
-                    <PaperProvider theme={myTheme}>
-                        <SafeAreaProvider>
-                            <GestureHandlerRootView>
-                                <RootNavigation />
-                            </GestureHandlerRootView>
-                        </SafeAreaProvider>
-                    </PaperProvider>
+                    <tagContext.Provider value={tagManagement}>
+                        <PaperProvider theme={myTheme}>
+                            <SafeAreaProvider>
+                                <GestureHandlerRootView>
+                                    <RootNavigation />
+                                </GestureHandlerRootView>
+                            </SafeAreaProvider>
+                        </PaperProvider>
+                    </tagContext.Provider>
                 </mediaLibraryContext.Provider>
             </musicPlayerContext.Provider>
         )
@@ -89,7 +95,7 @@ export default function AppLayout() {
                 shouldHide={appReady}
                 onAnimationEnd={() => {
                     setSplashHidden(true)
-                    BootSplash.hide({ fade: true })
+                    BootSplash.hide({ fade: true }).then(() => {})
                 }}
             />
         </View>

@@ -19,15 +19,17 @@ export type SongsListItemProps = {
 export const SongsListItem = memo(
     ({ song, songIdPlaying, onSongChange }: SongsListItemProps) => {
         const [isActive, setActive] = useState(false)
+        const [isChanging, setIsChanging] = useState(false)
 
         useEffect(() => {
             setActive(songIdPlaying === song.id)
-        }, [songIdPlaying, song.id])
-
-        // const isActive = songIdPlaying === song.id
+            setIsChanging(false)
+        }, [songIdPlaying])
 
         const onPress = () => {
-            // setActive(!isActive)
+            if (!isActive) {
+                setIsChanging(true)
+            }
             onSongChange?.(song.id)
         }
 
@@ -72,7 +74,11 @@ export const SongsListItem = memo(
                             numberOfLines={2}
                             style={{
                                 ...styles.songTitleText,
-                                color: isActive ? colors.secondary : colors.text,
+                                color: isActive
+                                    ? colors.secondary
+                                    : isChanging
+                                      ? colors.secondary
+                                      : colors.text,
                             }}
                         >
                             {song.title}

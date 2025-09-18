@@ -1,6 +1,7 @@
-import React, { useCallback, useRef, useMemo, useEffect, useState } from 'react'
-import { StyleSheet, View, Text, Animated, TouchableOpacity } from 'react-native'
+import React, { useCallback, useRef, useMemo, useEffect, useState, useContext } from 'react'
+import { StyleSheet, View, Text, TouchableOpacity } from 'react-native'
 import BottomSheet, {
+    BottomSheetFlatList,
     BottomSheetView,
     useBottomSheetSpringConfigs,
     useBottomSheetTimingConfigs,
@@ -17,6 +18,8 @@ import { Slider as SliderAwesome } from 'react-native-awesome-slider'
 import { useSharedValue } from 'react-native-reanimated'
 import { FontAwesome6 } from '@expo/vector-icons'
 import { i18nTokens } from '@/i18n/i18nTokens'
+import { Chip } from 'react-native-paper'
+import { tagContext } from '@/app/_layout'
 
 export type PlayerHandle = {
     openPlayer: () => void
@@ -104,7 +107,6 @@ const Player = ({
     const min = useSharedValue(0)
     const max = useSharedValue(1)
     const [isProgressMoving, setIsProgressMoving] = useState(true)
-    const [progressState, setProgressState] = useState(0)
     // For seek state to prevent button flickering
     const [isSeeking, setIsSeeking] = useState(false)
     const [lastPlayPauseState, setLastPlayPauseState] = useState('')
@@ -115,7 +117,6 @@ const Player = ({
             } else {
                 progress.value = 0
             }
-            setProgressState(progress.value)
         } else {
         }
     }, [playerStatus?.currentTime, playerStatus?.duration, isProgressMoving])
@@ -139,6 +140,85 @@ const Player = ({
             }
         }
     }
+
+    // For tags
+    const [selectedTags, setSelectedTags] = useState<Set<string>>(new Set())
+    const [nowSongId, setNowSongId] = useState('0')
+
+    useEffect(() => {
+        // When song changed
+        setNowSongId(songInfo?.id ? songInfo.id : '0')
+    }, [songInfo])
+
+    useEffect(() => {
+        // When song id changed, update attached tags to show
+        updateAttachedTags(nowSongId)
+    }, [nowSongId])
+
+    const tagManagement = useContext(tagContext)
+    if (!tagManagement) {
+        throw new Error('Tag context is not available')
+    }
+    const { addTagMask, deleteTageMask, tags, tagsMask } = tagManagement
+
+    const updateAttachedTags = (nowSongId: string) => {
+        const thisTagsMask = tagsMask.get(nowSongId)
+        if (thisTagsMask === undefined) {
+        } else {
+            const nextAttachedTags: Set<string> = new Set()
+            tags.forEach((tag, index) => {
+                if (thisTagsMask[index]) {
+                    nextAttachedTags.add(tag)
+                }
+            })
+            setSelectedTags(nextAttachedTags)
+        }
+    }
+
+    const toggleTagSelection = (tag: string) => {
+        setSelectedTags((prev) => {
+            const newSelected = new Set(prev)
+            const nowSongId = songInfo?.id ? songInfo.id : '0'
+            if (newSelected.has(tag)) {
+                newSelected.delete(tag)
+                deleteTageMask(nowSongId, tag)
+            } else {
+                newSelected.add(tag)
+                addTagMask(nowSongId, tag)
+            }
+            return newSelected
+        })
+    }
+
+    const renderTagItem = ({ item }: { item: string }) => (
+        <View style={{ marginHorizontal: 3, marginVertical: 3 }}>
+            <Chip
+                compact={true}
+                selected={selectedTags.has(item)}
+                showSelectedCheck={false}
+                // showSelectedOverlay={true}
+                onPress={() => {
+                    toggleTagSelection(item)
+                }}
+                style={{
+                    backgroundColor: selectedTags.has(item)
+                        ? titleTextColor
+                            ? titleTextColor
+                            : colors.text
+                        : backgroundColor,
+                }}
+                textStyle={{
+                    color: selectedTags.has(item)
+                        ? backgroundColor
+                        : titleTextColor
+                          ? titleTextColor
+                          : colors.text,
+                }}
+            >
+                {item}
+            </Chip>
+        </View>
+    )
 
     // Render player
     return (
@@ -233,8 +313,8 @@ const Player = ({
                             fontSize: 13,
                             height: 60,
                             fontWeight: fontWeight.bold,
-                            marginTop: 20,
-                            marginBottom: 20,
+                            marginTop: 10,
+                            marginBottom: 10,
                             color: lyricsTextColor ? lyricsTextColor : colors.textMuted,
                             textAlign: 'center',
                             justifyContent: 'center',
@@ -301,13 +381,11 @@ const Player = ({
                             flexDirection: 'row',
                             alignContent: 'space-evenly',
                             justifyContent: 'space-evenly',
-                            paddingVertical: 40,
+                            paddingVertical: 26,
                         }}
                     >
-                        <TouchableOpacity
-                            style={styles.playPauseButton}
-                            onPress={() => handleSongChange(previousSongId)}
-                        >
+                        {/*Backward Button*/}
+                        <TouchableOpacity onPress={() => handleSongChange(previousSongId)}>
                             <FontAwesome6
                                 style={{
                                     color: titleTextColor ? titleTextColor : colors.text,
@@ -317,8 +395,9 @@ const Player = ({
                                 size={30}
                             />
                         </TouchableOpacity>
+                        {/*Play/Pause Button*/}
                         <TouchableOpacity
-                            style={{ ...styles.playPauseButton, transform: [{ translateX: 3 }] }}
+                            style={styles.playPauseButton}
                             onPress={handlePlayPauseButton}
                         >
                             <FontAwesome6
@@ -336,11 +415,8 @@ const Player = ({
                                 size={30}
                             />
                         </TouchableOpacity>
-
-                        <TouchableOpacity
-                            style={styles.playPauseButton}
-                            onPress={() => handleSongChange(nextSongId)}
-                        >
+                        {/*Forward Button*/}
+                        <TouchableOpacity onPress={() => handleSongChange(nextSongId)}>
                             <FontAwesome6
                                 style={{
                                     color: titleTextColor ? titleTextColor : colors.text,
@@ -353,6 +429,25 @@ const Player = ({
                     </View>
                 </View>
             </BottomSheetView>
+            {/*Floating Tags Buttons*/}
+            <View
+                style={{
+                    position: 'absolute',
+                    bottom: 30,
+                    left: 0,
+                    right: 0,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                }}
+            >
+                <BottomSheetFlatList
+                    data={tags}
+                    renderItem={renderTagItem}
+                    keyExtractor={(item) => item}
+                    numColumns={3}
+                    columnWrapperStyle={{ justifyContent: 'center' }}
+                />
+            </View>
         </BottomSheet>
     )
 }
@@ -375,10 +470,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
     },
     playPauseButton: {
-        // verticalAlign: 'middle',
-        // textAlignVertical: 'center',
-        // // height: '100%',
-        // width: 50,
+        transform: [{ translateX: 3 }],
     },
     playPauseButtonIcon: {
         verticalAlign: 'middle',

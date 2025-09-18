@@ -1,7 +1,24 @@
 {
+    "alert": {
+        "errorTitle": "发生错误",
+        "cancelButtonText": "取消",
+        "deleteButtonText": "删除"
+    },
     "tabs": {
         "playing": "正在播放",
         "tags": "标签",
+        "tagsContent": {
+            "inputPlaceHolder": "输入新标签名称",
+            "addTagButton": "添加标签",
+            "deleteTagTitle": "删除标签",
+            "deleteTagMsg": "您确定要删除标签 \"{{tagName}}\"?",
+            "listEmptyComponent": "没有标签",
+            "listFooterComponent": "没有更多标签了",
+            "errorMsg": {
+                "failToAddTag": "标签添加失败",
+                "failToDeleteTag": "标签删除失败"
+            }
+        },
         "favorites": "喜欢",
         "songs": "歌曲"
     },

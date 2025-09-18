@@ -70,7 +70,7 @@ const FloatingSearchBar = ({
         }
     }, [visible, animatedValue])
 
-    // 如果翻译尚未准备好，返回 null
+    // If translation is not loaded, return null
     if (!visibility || !ready) {
         return null
     }

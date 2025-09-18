@@ -3,17 +3,10 @@ import { Asset } from 'expo-media-library'
 import { Directory, File } from 'expo-file-system/next'
 import { IAudioMetadata, ILyricsTag, IPicture, parseBuffer } from 'music-metadata'
 import { uint8ArrayToBase64 } from 'uint8array-extras'
-import {
-    addOrUpdateSongs,
-    addOrUpdateMinimalSongs,
-    getAllSongs,
-    getAllMinimalSongs,
-    getSongCount,
-    getMinimalSongCount,
-    deleteSong,
-    deleteMinimalSong,
-} from '@/database/songStorage'
+import { songCreator, songReader, songDeleter } from '@/database/songStorage'
 import { MusicInfo, MinimalMusicInfo } from '@/database/types'
+import * as tagDb from '@/database/songTagLinkedWrapper'
+import { hasLaunched } from '@/database/envStorage'
 
 interface IncrementalUpdateDiff {
     newSongs: Asset[]
@@ -51,7 +44,7 @@ export default class LocalMediaLibraryMMKV {
      */
     private getAllSongsCached(): MusicInfo[] {
         if (this.allSongsCache === null) {
-            this.allSongsCache = getAllSongs()
+            this.allSongsCache = songReader.getAllSongs()
         }
         return this.allSongsCache
     }
@@ -71,7 +64,7 @@ export default class LocalMediaLibraryMMKV {
      */
     private getAllMinimalSongsCached(): MinimalMusicInfo[] {
         if (this.allMinimalSongsCache === null) {
-            this.allMinimalSongsCache = getAllMinimalSongs()
+            this.allMinimalSongsCache = songReader.getAllMinimalSongs()
         }
         return this.allMinimalSongsCache
     }
@@ -301,8 +294,8 @@ export default class LocalMediaLibraryMMKV {
         console.log('Validating cache method...')
 
         // Check if data exists
-        const songCount = getSongCount()
-        const minimalSongCount = getMinimalSongCount()
+        const songCount = songReader.getSongCount()
+        const minimalSongCount = songReader.getMinimalSongCount()
 
         if (songCount === 0 || minimalSongCount === 0) {
             console.log('Cache is empty')
@@ -412,8 +405,9 @@ export default class LocalMediaLibraryMMKV {
         for (const deletedSong of deletedSongs) {
             musicInfoMap.delete(deletedSong.id)
             minimalMusicInfoMap.delete(deletedSong.id)
-            deleteSong(deletedSong.id)
-            deleteMinimalSong(deletedSong.id)
+            songDeleter.deleteSong(deletedSong.id)
+            songDeleter.deleteMinimalSong(deletedSong.id)
+            tagDb.deleter.deleteSongTag(deletedSong.id)
             console.log(`Removed deleted song: ${deletedSong.filename}`)
         }
 
@@ -429,14 +423,15 @@ export default class LocalMediaLibraryMMKV {
             // Update maps with new/modified songs
             for (const musicInfo of newMusicInfoList) {
                 musicInfoMap.set(musicInfo.id, musicInfo)
+                tagDb.creator.initSongTag(musicInfo.id)
             }
             for (const minimalMusicInfo of newMinimalMusicInfoList) {
                 minimalMusicInfoMap.set(minimalMusicInfo.id, minimalMusicInfo)
             }
 
             // Store updates in batch
-            addOrUpdateSongs(newMusicInfoList)
-            addOrUpdateMinimalSongs(newMinimalMusicInfoList)
+            songCreator.addOrUpdateSongs(newMusicInfoList)
+            songCreator.addOrUpdateMinimalSongs(newMinimalMusicInfoList)
         }
 
         // Convert maps back to arrays
@@ -462,7 +457,7 @@ export default class LocalMediaLibraryMMKV {
             }
 
             // Check if cache is valid
-            const hasData = getSongCount() > 0
+            const hasData = songReader.getSongCount() > 0
             if (hasData) {
                 if (this.isCacheValid(realtimeAssets)) {
                     console.log('Using cached music library, Loading...')
@@ -493,8 +488,9 @@ export default class LocalMediaLibraryMMKV {
                         diff.newSongs.length + diff.modifiedSongs.length + diff.deletedSongs.length
 
                     // Only use incremental update if changes are relatively small
-                    const changeRatio = totalChanges / realtimeAssets.length
-                    if (changeRatio < 0.5) {
+                    // const changeRatio = totalChanges / realtimeAssets.length
+                    // if (changeRatio < 0.5) {
+                    if (!hasLaunched()) {
                         const { updatedMusicInfoList, updatedMinimalMusicInfoList } =
                             await this.processIncrementalUpdates(diff)
 
@@ -518,10 +514,13 @@ export default class LocalMediaLibraryMMKV {
                             length: realtimeAssets.length,
                         }
                     } else {
-                        console.log(
-                            `Too many changes (${(changeRatio * 100).toFixed(1)}%), falling back to full update`,
-                        )
+                        console.log('First time to launch, falling back to full update')
                     }
+                    // } else {
+                    //     console.log(
+                    //         `Too many changes (${(changeRatio * 100).toFixed(1)}%), falling back to full update`,
+                    //     )
+                    // }
                 } catch (error) {
                     console.error('Incremental update failed, falling back to full update:', error)
                 }
@@ -535,10 +534,15 @@ export default class LocalMediaLibraryMMKV {
             // Create minimal info list
             const minimalMusicInfoList = this.createMinimalMusicInfoList(musicInfoList)
 
+            // Init tags management
+            minimalMusicInfoList.forEach((minimalMusicInfo) => {
+                tagDb.creator.initSongTag(minimalMusicInfo.id)
+            })
+
             // Store data
             console.log('Storing music library...')
-            addOrUpdateSongs(musicInfoList)
-            addOrUpdateMinimalSongs(minimalMusicInfoList)
+            songCreator.addOrUpdateSongs(musicInfoList)
+            songCreator.addOrUpdateMinimalSongs(minimalMusicInfoList)
 
             console.log('Music library cache updated')
 
