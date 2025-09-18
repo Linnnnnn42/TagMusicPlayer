@@ -25,7 +25,7 @@
     "player": {
         "emptyTitle": "Unknown title",
         "emptyArtist": "Unknown artist",
-        "emptyLyrics": "No lyrics available"
+        "emptyLyrics": "........"
     },
     "floatingSearchBar": {
         "placeholder": "Find in songs",

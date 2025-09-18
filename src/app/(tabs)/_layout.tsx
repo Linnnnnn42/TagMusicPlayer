@@ -10,8 +10,8 @@ import { musicPlayerContext } from '@/app/_layout'
 import useCoverColors from '@/hooks/player/useCoverColors'
 import { MinimalMusicInfo } from '@/database/types'
 import { AudioPlayer, AudioStatus } from 'expo-audio'
-import { syncLyricsProvider } from '@/hooks/player/syncLyricsProvider'
 import { i18nTokens } from '@/i18n/i18nTokens'
+import { useSyncLyrics } from '@/hooks/player/useSyncLyrics'
 
 export type PlayerProps = {
     songInfo?: MinimalMusicInfo
@@ -102,14 +102,9 @@ export default function TabsLayout() {
 
     // Get lyrics
     const [currentLyric, setCurrentLyric] = useState('')
-    useEffect(() => {
-        if (playerStatus?.duration !== undefined && playerStatus?.currentTime !== undefined) {
-            setCurrentLyric(
-                syncLyricsProvider(songInfoPlaying.lyrics, playerStatus.currentTime) ||
-                    t(i18nTokens.player.emptyLyrics),
-            )
-        }
-    }, [playerStatus?.currentTime, songInfoPlaying.lyrics])
+    useSyncLyrics(songInfoPlaying.lyrics, playerStatus?.currentTime, (lyric) => {
+        setCurrentLyric(lyric || t(i18nTokens.player.emptyLyrics))
+    })
 
     // Player ref
     const playerRef = useRef<PlayerHandle>(null)

@@ -25,7 +25,7 @@
     "player": {
         "emptyTitle": "未知标题",
         "emptyArtist": "佚名",
-        "emptyLyrics": "暂无歌词"
+        "emptyLyrics": "........"
     },
     "floatingSearchBar": {
         "placeholder": "搜索音乐",
