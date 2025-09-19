@@ -19,7 +19,6 @@
                 "failToDeleteTag": "Failed to delete tag"
             }
         },
-        "favorites": "Favorites",
         "songs": "Songs",
         "general": {
           "noSongsFound": "No songs found"

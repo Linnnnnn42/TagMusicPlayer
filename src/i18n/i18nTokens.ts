@@ -19,7 +19,6 @@ export const i18nTokens = {
                 failToDeleteTag: 'tabs.tagsContent.errorMsg.failToDeleteTag',
             },
         },
-        favorites: 'tabs.favorites',
         songs: 'tabs.songs',
         general: {
             noSongsFound: 'tabs.general.noSongsFound',

@@ -19,7 +19,6 @@
                 "failToDeleteTag": "标签删除失败"
             }
         },
-        "favorites": "喜欢",
         "songs": "歌曲",
         "general": {
           "noSongsFound": "找不到歌曲"

@@ -87,7 +87,6 @@ export const fontWeight: { [key: string]: TextStyle['fontWeight'] } = {
 export const tabIcons = {
     playlists: 'playlist-music',
     tags: 'tag-multiple',
-    favorites: 'heart',
     songs: 'music-circle',
 }
 
