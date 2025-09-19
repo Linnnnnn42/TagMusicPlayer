@@ -21,20 +21,21 @@ import { i18nTokens } from '@/i18n/i18nTokens'
 import { Chip } from 'react-native-paper'
 import { tagContext } from '@/app/_layout'
 import { playPauseButtonHandler } from '@/handler/playerHandler'
+import { t } from 'i18next'
 
-export type PlayerHandle = {
+export type BottomPlayerHandle = {
     openPlayer: () => void
     closePlayer: () => void
 }
 
 type BottomPlayerProps = PlayerProps & {
-    ref?: React.Ref<PlayerHandle>
+    ref?: React.Ref<BottomPlayerHandle>
     previousSongId: string
     nextSongId: string
     handleSongChange: (songId: string) => void
 }
 
-const Player = ({
+const BottomPlayer = ({
     ref,
     player,
     playerStatus,
@@ -47,8 +48,6 @@ const Player = ({
     nextSongId,
     handleSongChange,
 }: BottomPlayerProps) => {
-    const { t } = useTranslation()
-
     // For bottom sheet:
     // Bottom sheet hooks
     const sheetRef = useRef<BottomSheet>(null)
@@ -95,7 +94,7 @@ const Player = ({
                     closePlayer: () => handleClosePress(),
                 })
             } else if (ref.hasOwnProperty('current')) {
-                ;(ref as React.RefObject<PlayerHandle>).current = {
+                ;(ref as React.RefObject<BottomPlayerHandle>).current = {
                     openPlayer: () => handleSnapPress(0),
                     closePlayer: () => handleClosePress(),
                 }
@@ -414,24 +413,26 @@ const Player = ({
                 </View>
             </BottomSheetView>
             {/*Floating Tags Buttons*/}
-            <View
-                style={{
-                    position: 'absolute',
-                    bottom: 30,
-                    left: 0,
-                    right: 0,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                }}
-            >
-                <BottomSheetFlatList
-                    data={tags}
-                    renderItem={renderTagItem}
-                    keyExtractor={(item) => item}
-                    numColumns={3}
-                    columnWrapperStyle={{ justifyContent: 'center' }}
-                />
-            </View>
+            {playerStatus?.isLoaded ? (
+                <View
+                    style={{
+                        position: 'absolute',
+                        bottom: 30,
+                        left: 0,
+                        right: 0,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }}
+                >
+                    <BottomSheetFlatList
+                        data={tags}
+                        renderItem={renderTagItem}
+                        keyExtractor={(item) => item}
+                        numColumns={3}
+                        columnWrapperStyle={{ justifyContent: 'center' }}
+                    />
+                </View>
+            ) : null}
         </BottomSheet>
     )
 }
@@ -465,4 +466,4 @@ const styles = StyleSheet.create({
     },
 })
 
-export default Player
+export default BottomPlayer

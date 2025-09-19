@@ -1,16 +1,14 @@
-import { FlatList, Text, View } from 'react-native'
-import defaultStyle, { songListStyles } from '@/styles/style'
+import { FlatList, View } from 'react-native'
+import defaultStyle from '@/styles/style'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { colors, fontSize } from '@/constants/tokens'
+import { colors } from '@/constants/tokens'
 import TabHeader from '@/components/TabHeader'
-import React, { useCallback, useContext } from 'react'
+import React, { useContext } from 'react'
 import { i18nTokens } from '@/i18n/i18nTokens'
-import { Chip, Divider } from 'react-native-paper'
+import { Chip } from 'react-native-paper'
 import { mediaLibraryContext, musicPlayerContext, tagContext } from '@/app/_layout'
-import { SongsListItem, SongsListItemProps } from '@/components/SongsTab/SongsListItem'
-import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 import { useTagFilter } from '@/hooks/playingTab/useTagFilter'
-import { t } from 'i18next'
+import { SongList } from '@/components/SongsList/SongList'
 
 export default function PlaylistsTab() {
     // Get Lib Data
@@ -46,22 +44,12 @@ export default function PlaylistsTab() {
         </View>
     )
 
-    // For song list
+    // States for song list
     const musicPlayer = useContext(musicPlayerContext)
     if (!musicPlayer) {
         throw new Error('useContext Fail')
     }
     const { songIdPlaying, handleSongChange } = musicPlayer
-    const renderItem = useCallback(
-        ({ item: song }: { item: SongsListItemProps['song'] }) => (
-            <SongsListItem
-                song={song}
-                songIdPlaying={songIdPlaying}
-                onSongChange={handleSongChange}
-            />
-        ),
-        [handleSongChange, songIdPlaying],
-    )
 
     return (
         <View style={{ backgroundColor: colors.background, height: '100%' }}>
@@ -81,32 +69,17 @@ export default function PlaylistsTab() {
                 />
                 <View style={{ backgroundColor: '#fff', height: '86%' }}>
                     {/*Tags selection part*/}
-                    <FlatList
-                        style={{
-                            marginBottom: 100,
+                    <SongList
+                        filteredMusicInfoList={filteredSongs}
+                        onSongChange={handleSongChange}
+                        songIdPlaying={songIdPlaying}
+                        customizedStyle={{
+                            marginBottom: 110,
                         }}
-                        data={filteredSongs}
-                        renderItem={renderItem}
-                        keyExtractor={(song) => song.id}
-                        ListEmptyComponent={
-                            <View style={songListStyles.emptyContainer}>
-                                <Text style={{ fontSize: fontSize.medium }}>
-                                    {t(i18nTokens.tabs.general.noSongsFound)}
-                                </Text>
-                                <MaterialIcons
-                                    name="art-track"
-                                    size={130}
-                                    style={{
-                                        ...songListStyles.songEmptyCoverImage,
-                                    }}
-                                />
-                            </View>
-                        }
-                        ItemSeparatorComponent={Divider}
                     />
                     <View
                         style={{
-                            bottom: 90,
+                            bottom: 100,
                             justifyContent: 'center',
                             alignItems: 'center',
                         }}

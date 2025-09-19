@@ -5,7 +5,7 @@ import { Pressable, StyleSheet, type ViewProps } from 'react-native'
 import FloatingPlayer from '@/components/FloatingPlayer/FloatingPlayer'
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import Player, { type PlayerHandle } from '@/app/player'
+import BottomPlayer, { type BottomPlayerHandle } from '@/components/BottomPlayer/BottomPlayer'
 import { musicPlayerContext } from '@/app/_layout'
 import useCoverColors from '@/hooks/player/useCoverColors'
 import { MinimalMusicInfo } from '@/database/types'
@@ -63,14 +63,6 @@ const tabScreens = [
             size: 28,
         },
     },
-    {
-        name: 'favorites',
-        title: 'tabs.favorites',
-        icon: {
-            name: tabIcons.favorites as keyof typeof MaterialCommunityIcons.glyphMap,
-            size: 26,
-        },
-    },
 ] as const
 
 export default function TabsLayout() {
@@ -106,8 +98,8 @@ export default function TabsLayout() {
         setCurrentLyric(lyric || t(i18nTokens.player.emptyLyrics))
     })
 
-    // Player ref
-    const playerRef = useRef<PlayerHandle>(null)
+    // BottomPlayer ref
+    const playerRef = useRef<BottomPlayerHandle>(null)
 
     useEffect(() => {
         playerModeSetter({ shouldPlayInBackground: true }).then(() => {
@@ -161,7 +153,7 @@ export default function TabsLayout() {
                 coverColorsSource={coverColorsSource}
                 coverColorsByLuminance={coverColorsByLuminance}
             />
-            <Player
+            <BottomPlayer
                 ref={playerRef}
                 backgroundColor={backgroundColor}
                 lyricsTextColor={lyricsTextColor}

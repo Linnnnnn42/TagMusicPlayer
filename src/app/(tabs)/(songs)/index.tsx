@@ -1,6 +1,6 @@
 import { View } from 'react-native'
 import defaultStyle from '@/styles/style'
-import { SongsList } from '@/components/SongsTab/SongsList'
+import { SongsListForSongTab } from '@/components/SongsList/SongsListForSongTab'
 import { useContext, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { colors } from '@/constants/tokens'
@@ -26,7 +26,7 @@ export default function () {
             filteredSongs: [],
         }
 
-    // Player
+    // BottomPlayer
     if (!musicPlayer) {
         throw new Error('useContext Fail')
     }
@@ -54,7 +54,7 @@ export default function () {
                         onSelectionChange={setSearchFilters}
                     />
                     <SearchButton visible={isSearchBarVisible} onPress={setIsSearchBarVisible} />
-                    <SongsList
+                    <SongsListForSongTab
                         loading={loading}
                         filteredMusicInfoList={filteredSongs || []}
                         visible={isSearchBarVisible}
