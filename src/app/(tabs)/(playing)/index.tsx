@@ -5,31 +5,31 @@ import { colors } from '@/constants/tokens'
 import TabHeader from '@/components/TabHeader'
 import React, { useContext } from 'react'
 import { i18nTokens } from '@/i18n/i18nTokens'
-import { Chip } from 'react-native-paper'
 import { musicPlayerContext, tagContext, tagFilterContext } from '@/app/_layout'
 import { SongList } from '@/components/SongsList/SongList'
+import { TagFilterButton } from '@/components/PlayingTab/TagFilterButton'
+import { TagFilterState } from '@/hooks/playingTab/useTagFilter'
 
 export default function PlayingTab() {
     // Tag filtering
-    const { selectedTags, filteredSongs, toggleTagSelection } = { ...useContext(tagFilterContext) }
+    const tagFilter = useContext(tagFilterContext)
+    const tagStates = tagFilter?.tagStates || {}
+    const filteredSongs = tagFilter?.filteredSongs || []
+    const updateTagState = tagFilter?.updateTagState
 
     // Load tags
-    const { tags } = { ...useContext(tagContext) }
+    const tagCtx = useContext(tagContext)
+    const tags = tagCtx?.tags || []
 
     const renderTagItem = ({ item }: { item: string }) => (
         <View style={{ marginHorizontal: 3, marginVertical: 3 }}>
-            <Chip
-                compact={true}
-                mode={'outlined'}
-                selected={selectedTags ? selectedTags.has(item) : false}
-                showSelectedCheck={false}
-                showSelectedOverlay={true}
-                onPress={() => {
-                    toggleTagSelection?.(item)
+            <TagFilterButton
+                tag={item}
+                initialState={tagStates[item] || 'neutral'}
+                onPress={(state: TagFilterState) => {
+                    updateTagState?.(item, state)
                 }}
-            >
-                {item}
-            </Chip>
+            />
         </View>
     )
 

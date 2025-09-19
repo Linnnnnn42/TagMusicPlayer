@@ -1,4 +1,4 @@
-// Cache keys for MMKV storage
+// Keys for MMKV storage
 export const keys = {
     // New method keys - per-song storage with index
     SONG_PREFIX: 'song_',
@@ -17,5 +17,5 @@ export const keys = {
 
     // Env keys
     HAS_LAUNCHED: 'hasLaunched',
-    LAST_PLAYING_SELECTED_TAGS: 'lastPlayingSelectedTags',
+    LAST_PLAYING_TAG_STATES: 'lastPlayingTagStates',
 }

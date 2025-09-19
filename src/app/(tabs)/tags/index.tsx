@@ -7,7 +7,6 @@ import { useState, useContext } from 'react'
 import { i18nTokens } from '@/i18n/i18nTokens'
 import { tagContext } from '@/app/_layout'
 import { Divider, Portal, Snackbar } from 'react-native-paper'
-import { UniformListUtilComponent } from '@/components/ListUtilComponents'
 import { t } from 'i18next'
 
 export default function TagsTab() {
@@ -122,15 +121,15 @@ export default function TagsTab() {
                         }
                         ItemSeparatorComponent={Divider}
                         ListEmptyComponent={
-                            <UniformListUtilComponent
-                                text={t(i18nTokens.tabs.tagsContent.listEmptyComponent)}
-                            />
+                            <Text style={styles.text}>
+                                {t(i18nTokens.tabs.tagsContent.listEmptyComponent)}
+                            </Text>
                         }
                         ListFooterComponent={
                             tags.length === 0 ? null : (
-                                <UniformListUtilComponent
-                                    text={t(i18nTokens.tabs.tagsContent.listFooterComponent)}
-                                />
+                                <Text style={styles.text}>
+                                    {t(i18nTokens.tabs.tagsContent.listFooterComponent)}
+                                </Text>
                             )
                         }
                     />
@@ -157,6 +156,12 @@ export default function TagsTab() {
 }
 
 const styles = StyleSheet.create({
+    text: {
+        paddingVertical: 5,
+        textAlign: 'center',
+        color: colors.textMuted,
+        fontStyle: 'italic',
+    },
     addTagContainer: {
         flexDirection: 'row',
         padding: 16,

@@ -1,6 +1,7 @@
 import { MMKV } from 'react-native-mmkv'
 import { dbIds } from '@/database/dbIds'
 import { keys } from '@/database/keys'
+import { TagFilterState } from '@/hooks/playingTab/useTagFilter'
 
 const envStorage = new MMKV({
     id: dbIds.envStorageId,
@@ -15,14 +16,14 @@ export function hasLaunched() {
     }
 }
 
-export function updatePlayingSelectedTags(newSelected: Set<string>) {
-    envStorage.set(keys.LAST_PLAYING_SELECTED_TAGS, JSON.stringify(Array.from(newSelected)))
+export function updatePlayingTagStates(tagStates: Record<string, TagFilterState>) {
+    envStorage.set(keys.LAST_PLAYING_TAG_STATES, JSON.stringify(tagStates))
 }
 
-export function readPlayingSelectedTags() {
-    const str = envStorage.getString(keys.LAST_PLAYING_SELECTED_TAGS)
+export function readPlayingTagStates(): Record<string, TagFilterState> | null {
+    const str = envStorage.getString(keys.LAST_PLAYING_TAG_STATES)
     if (!str) {
         return null
     }
-    return new Set<string>(JSON.parse(str) as string[])
+    return JSON.parse(str) as Record<string, TagFilterState>
 }
