@@ -1,8 +1,9 @@
 import { MMKV } from 'react-native-mmkv'
 import { keys } from '@/database/keys'
+import { dbIds } from '@/database/dbIds'
 
 const tagSongStorage = new MMKV({
-    id: 'tag-song-storage',
+    id: dbIds.tagSongStorageId,
 })
 
 const tagSongIndexKey = `${keys.TAG_SONG_INDEX_KEY}`

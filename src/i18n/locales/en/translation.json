@@ -20,7 +20,10 @@
             }
         },
         "favorites": "Favorites",
-        "songs": "Songs"
+        "songs": "Songs",
+        "general": {
+          "noSongsFound": "No songs found"
+        }
     },
     "player": {
         "emptyTitle": "Unknown title",

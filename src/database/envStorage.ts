@@ -1,7 +1,8 @@
 import { MMKV } from 'react-native-mmkv'
+import { dbIds } from '@/database/dbIds'
 
 const envStorage = new MMKV({
-    id: 'env-storage',
+    id: dbIds.envStorageId,
 })
 
 export function hasLaunched() {

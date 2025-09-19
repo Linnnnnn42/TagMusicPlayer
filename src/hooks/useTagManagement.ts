@@ -6,7 +6,7 @@ export const useTagManagement = (mediaLibraryLoading: boolean) => {
     const [loading, setLoading] = useState(true)
 
     const [tags, setTags] = useState<string[]>([])
-    const [tagsMask, setTagsMask] = useState<Map<string, boolean[]>>(new Map([['', [false]]]))
+    const [tagsMasks, setTagsMasks] = useState<Map<string, boolean[]>>(new Map([['', [false]]]))
 
     const loadTags = () => {
         try {
@@ -47,14 +47,14 @@ export const useTagManagement = (mediaLibraryLoading: boolean) => {
                         tagAttachedArray[index] = true
                     }
                 })
-                const newTagsMask = tagsMask
-                newTagsMask.set(songId, tagAttachedArray)
-                setTagsMask(newTagsMask)
+                const newTagsMasks = tagsMasks
+                newTagsMasks.set(songId, tagAttachedArray)
+                setTagsMasks(newTagsMasks)
             } catch (error) {
                 console.error('Failed to load tagsMask:', error)
-                const newTagsMask = tagsMask
-                newTagsMask.set(songId, [false])
-                setTagsMask(newTagsMask)
+                const newTagsMasks = tagsMasks
+                newTagsMasks.set(songId, [false])
+                setTagsMasks(newTagsMasks)
             } finally {
                 resolve()
             }
@@ -95,7 +95,7 @@ export const useTagManagement = (mediaLibraryLoading: boolean) => {
     return {
         loading,
         tags,
-        tagsMask,
+        tagsMasks,
         addTag,
         deleteTag,
         addTagMask,

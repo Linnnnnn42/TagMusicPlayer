@@ -20,6 +20,7 @@ import { FontAwesome6 } from '@expo/vector-icons'
 import { i18nTokens } from '@/i18n/i18nTokens'
 import { Chip } from 'react-native-paper'
 import { tagContext } from '@/app/_layout'
+import { playPauseButtonHandler } from '@/handler/playerHandler'
 
 export type PlayerHandle = {
     openPlayer: () => void
@@ -122,28 +123,17 @@ const Player = ({
     }, [playerStatus?.currentTime, playerStatus?.duration, isProgressMoving])
 
     // For controls
-    const handlePlayPauseButton = () => {
-        if (playerStatus?.playing === true) {
-            player?.pause()
-        } else {
-            if (
-                playerStatus &&
-                playerStatus.currentTime !== undefined &&
-                playerStatus.duration !== undefined &&
-                playerStatus.isLoaded &&
-                playerStatus.currentTime >= playerStatus.duration
-            ) {
-                player?.seekTo(0)
-                player?.play()
-            } else {
-                player?.play()
-            }
-        }
-    }
+    const handlePlayPauseButton = playPauseButtonHandler
 
     // For tags
     const [selectedTags, setSelectedTags] = useState<Set<string>>(new Set())
     const [nowSongId, setNowSongId] = useState('0')
+
+    const tagManagement = useContext(tagContext)
+    if (!tagManagement) {
+        throw new Error('Tag context is not available')
+    }
+    const { addTagMask, deleteTageMask, tags, tagsMasks } = tagManagement
 
     useEffect(() => {
         // When song changed
@@ -155,14 +145,8 @@ const Player = ({
         updateAttachedTags(nowSongId)
     }, [nowSongId])
 
-    const tagManagement = useContext(tagContext)
-    if (!tagManagement) {
-        throw new Error('Tag context is not available')
-    }
-    const { addTagMask, deleteTageMask, tags, tagsMask } = tagManagement
-
     const updateAttachedTags = (nowSongId: string) => {
-        const thisTagsMask = tagsMask.get(nowSongId)
+        const thisTagsMask = tagsMasks.get(nowSongId)
         if (thisTagsMask === undefined) {
         } else {
             const nextAttachedTags: Set<string> = new Set()
@@ -398,7 +382,7 @@ const Player = ({
                         {/*Play/Pause Button*/}
                         <TouchableOpacity
                             style={styles.playPauseButton}
-                            onPress={handlePlayPauseButton}
+                            onPress={() => handlePlayPauseButton(playerStatus, player)}
                         >
                             <FontAwesome6
                                 style={{

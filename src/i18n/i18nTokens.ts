@@ -1,6 +1,6 @@
 export const i18nTokens = {
     alert: {
-        errorTitle: 'errors.error',
+        errorTitle: 'alert.errorTitle',
         cancelButtonText: 'alert.cancelButtonText',
         deleteButtonText: 'alert.deleteButtonText',
     },
@@ -21,6 +21,9 @@ export const i18nTokens = {
         },
         favorites: 'tabs.favorites',
         songs: 'tabs.songs',
+        general: {
+            noSongsFound: 'tabs.general.noSongsFound',
+        },
     },
     player: {
         emptyTitle: 'player.emptyTitle',

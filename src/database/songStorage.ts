@@ -1,10 +1,11 @@
 import { MMKV } from 'react-native-mmkv'
 import { keys } from './keys'
 import { MinimalMusicInfo, MusicInfo } from '@/database/types'
+import { dbIds } from '@/database/dbIds'
 
 // Create dedicated MMKV instance for song storage
 const songStorage = new MMKV({
-    id: 'song-storage',
+    id: dbIds.songStorageId,
 })
 
 /**

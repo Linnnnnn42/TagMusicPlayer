@@ -20,7 +20,10 @@
             }
         },
         "favorites": "喜欢",
-        "songs": "歌曲"
+        "songs": "歌曲",
+        "general": {
+          "noSongsFound": "找不到歌曲"
+        }
     },
     "player": {
         "emptyTitle": "未知标题",

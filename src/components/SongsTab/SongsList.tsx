@@ -4,6 +4,7 @@ import { SongsListItem, SongsListItemProps } from '@/components/SongsTab/SongsLi
 import { colors, fontSize } from '@/constants/tokens'
 import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 import { Divider } from 'react-native-paper'
+import { songListStyles } from '@/styles/style'
 
 type SongsListProps = {
     loading: boolean
@@ -46,7 +47,7 @@ export const SongsList = ({
     return (
         <View style={{ flex: 1 }}>
             {loading ? (
-                <View style={styles.loadingContainer}>
+                <View style={songListStyles.loadingContainer}>
                     <Text style={{ fontSize: fontSize.medium }}>Loading...</Text>
                 </View>
             ) : (
@@ -65,7 +66,7 @@ export const SongsList = ({
                                 paddingBottom: 160,
                             }}
                             ListEmptyComponent={
-                                <View style={styles.emptyContainer}>
+                                <View style={songListStyles.emptyContainer}>
                                     <Text style={{ fontSize: fontSize.medium }}>
                                         No songs found
                                     </Text>
@@ -73,7 +74,7 @@ export const SongsList = ({
                                         name="art-track"
                                         size={130}
                                         style={{
-                                            ...styles.songEmptyCoverImage,
+                                            ...songListStyles.songEmptyCoverImage,
                                         }}
                                     />
                                 </View>
@@ -88,27 +89,3 @@ export const SongsList = ({
         </View>
     )
 }
-
-const styles = StyleSheet.create({
-    loadingContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    emptyContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        paddingTop: 50,
-    },
-    songEmptyCoverImage: {
-        borderRadius: 16,
-        width: 150,
-        height: 150,
-        top: 35,
-        color: colors.textMutedOpacity90Light,
-        backgroundColor: colors.textMutedOpacity30Light,
-        textAlign: 'center',
-        textAlignVertical: 'center',
-    },
-})

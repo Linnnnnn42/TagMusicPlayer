@@ -7,6 +7,7 @@ import { Image } from 'expo-image'
 import { FontAwesome6 } from '@expo/vector-icons'
 import { AndroidImageColors } from 'react-native-image-colors/build/types'
 import { PlayerProps } from '@/app/(tabs)/_layout'
+import { playPauseButtonHandler } from '@/handler/playerHandler'
 
 type FloatingPlayerProps = PlayerProps & {
     onFloatingPlayerPress?: () => void
@@ -29,24 +30,7 @@ const FloatingPlayer = ({
     if (!songInfo) return null
 
     // Play/Pause
-    const handlePlayPauseButton = () => {
-        if (playerStatus?.playing === true) {
-            player?.pause()
-        } else {
-            if (
-                playerStatus &&
-                playerStatus.currentTime !== undefined &&
-                playerStatus.duration !== undefined &&
-                playerStatus.isLoaded &&
-                playerStatus.currentTime >= playerStatus.duration
-            ) {
-                player?.seekTo(0)
-                player?.play()
-            } else {
-                player?.play()
-            }
-        }
-    }
+    const handlePlayPauseButton = playPauseButtonHandler
 
     // to player screen
     const handleOnPress = () => {
@@ -118,7 +102,7 @@ const FloatingPlayer = ({
                         />
                         <TouchableOpacity
                             style={styles.playPauseButton}
-                            onPress={handlePlayPauseButton}
+                            onPress={() => handlePlayPauseButton(playerStatus, player)}
                         >
                             <FontAwesome6
                                 style={{

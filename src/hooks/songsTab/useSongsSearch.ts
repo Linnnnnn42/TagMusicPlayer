@@ -1,6 +1,5 @@
-import { useContext, useEffect, useMemo, useState } from 'react'
+import { useContext, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { TFunction } from 'i18next'
 import { mediaLibraryContext } from '@/app/_layout'
 import { MinimalMusicInfo } from '@/database/types'
 
@@ -8,7 +7,6 @@ const searchFilter = (
     songs: MinimalMusicInfo[] | undefined,
     searchContent: string,
     searchFilters: number[],
-    t: TFunction<'translation', undefined>,
 ) => {
     let filteredSongList = songs ? [...songs] : []
 
@@ -61,7 +59,7 @@ const useSongsSearch = () => {
     const filteredSongs = useMemo(() => {
         if (!searchContent) return minimalMusicInfoList
 
-        return searchFilter(minimalMusicInfoList, searchContent, searchFilters, t)
+        return searchFilter(minimalMusicInfoList, searchContent, searchFilters)
     }, [searchContent, minimalMusicInfoList, searchFilters])
 
     return {
