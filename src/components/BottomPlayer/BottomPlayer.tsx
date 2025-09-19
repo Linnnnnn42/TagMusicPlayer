@@ -412,7 +412,7 @@ const BottomPlayer = ({
                 </View>
             </BottomSheetView>
             {/*Floating Tags Buttons*/}
-            {playerStatus?.isLoaded ? (
+            {nowSongId !== '0' ? (
                 <View
                     style={{
                         position: 'absolute',
