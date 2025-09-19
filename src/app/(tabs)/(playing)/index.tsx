@@ -56,7 +56,7 @@ export default function PlayingTab() {
                     translateY={-35}
                     translateX={-30}
                 />
-                <View style={{ backgroundColor: '#fff', height: '86%' }}>
+                <View style={{ backgroundColor: '#fff', height: '100%' }}>
                     {/*Tags selection part*/}
                     <SongList
                         filteredMusicInfoList={filteredSongs}
@@ -65,12 +65,22 @@ export default function PlayingTab() {
                         customizedStyle={{
                             marginBottom: 110,
                         }}
+                        customizedContentContainerStyle={{
+                            paddingBottom: 220,
+                        }}
                     />
                     <View
                         style={{
-                            bottom: 100,
+                            bottom: 0,
+                            alignSelf: 'center',
                             justifyContent: 'center',
                             alignItems: 'center',
+                            paddingTop: 10,
+                            paddingBottom: 190,
+                            paddingHorizontal: 15,
+                            backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                            width: '95%',
+                            position: 'absolute',
                         }}
                     >
                         <FlatList

@@ -30,6 +30,10 @@ export const SongList = ({
         [onSongChange, songIdPlaying],
     )
 
+    const CustomDivider = () => (
+        <Divider horizontalInset style={{ marginLeft: 16, marginRight: 16 }} />
+    )
+
     return (
         <FlatList
             data={filteredMusicInfoList}
@@ -53,7 +57,7 @@ export const SongList = ({
                     />
                 </View>
             }
-            ItemSeparatorComponent={Divider}
+            ItemSeparatorComponent={CustomDivider}
         />
     )
 }

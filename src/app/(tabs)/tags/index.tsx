@@ -8,6 +8,7 @@ import { i18nTokens } from '@/i18n/i18nTokens'
 import { tagContext } from '@/app/_layout'
 import { Divider, Portal, Snackbar } from 'react-native-paper'
 import { t } from 'i18next'
+import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 
 export default function TagsTab() {
     const [undoDeleteSnackbarVisible, setUndoDeleteSnackbarVisible] = useState(false)
@@ -23,7 +24,42 @@ export default function TagsTab() {
     }
     const { tags, addTag, deleteTag } = tagManagement
 
+    // Function to check if a string contains emojis
+    const containsEmoji = (str: string): boolean => {
+        const emojiRegex =
+            /(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/gi
+        return emojiRegex.test(str)
+    }
+
     const handleAddTag = () => {
+        // Validate that tag name is not empty
+        if (!newTagName.trim()) {
+            Alert.alert(
+                t(i18nTokens.alert.errorTitle),
+                t(i18nTokens.tabs.tagsContent.errorMsg.tagNameCannotBeEmpty),
+            )
+            return
+        }
+
+        // Validate that tag name does not contain emojis
+        if (containsEmoji(newTagName)) {
+            Alert.alert(
+                t(i18nTokens.alert.errorTitle),
+                t(i18nTokens.tabs.tagsContent.errorMsg.emojiNotAllowed),
+            )
+            return
+        }
+
+        // Check if tag name already exists (case-insensitive)
+        const isTagExist = tags.some((tag) => tag.toLowerCase() === newTagName.trim().toLowerCase())
+        if (isTagExist) {
+            Alert.alert(
+                t(i18nTokens.alert.errorTitle),
+                t(i18nTokens.tabs.tagsContent.errorMsg.tagAlreadyExists),
+            )
+            return
+        }
+
         try {
             addTag(newTagName)
             setNewTagName('')
@@ -69,7 +105,7 @@ export default function TagsTab() {
         <View style={styles.tagItem}>
             <Text style={styles.tagText}>{item}</Text>
             <TouchableOpacity style={styles.deleteButton} onPress={() => handleDeleteTag(item)}>
-                <Text style={styles.deleteButtonText}>×</Text>
+                <MaterialIcons name="layers-clear" size={24} color={paperThemeColors.error} />
             </TouchableOpacity>
         </View>
     )
@@ -207,7 +243,7 @@ const styles = StyleSheet.create({
         color: colors.text,
     },
     deleteButton: {
-        backgroundColor: paperThemeColors.error,
+        // backgroundColor: paperThemeColors.error,
         width: 30,
         height: 30,
         borderRadius: 15,

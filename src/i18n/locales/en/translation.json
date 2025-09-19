@@ -16,7 +16,10 @@
             "listFooterComponent": "No tags anymore",
             "errorMsg": {
                 "failToAddTag": "Failed to add tag",
-                "failToDeleteTag": "Failed to delete tag"
+                "failToDeleteTag": "Failed to delete tag",
+                "emojiNotAllowed": "Tag name cannot contain emojis",
+                "tagAlreadyExists": "Tag already exists",
+                "tagNameCannotBeEmpty": "Tag name cannot be empty"
             }
         },
         "songs": "Songs",

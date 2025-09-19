@@ -60,8 +60,7 @@ export const useTagFilter = ({ minimalMusicInfoList, tagManagementLoading }: Use
                           return includedSongIdSet.has(song.id)
                       }
 
-                      // If no included tags, include all that aren't excluded
-                      return true
+                      // If no included tags, do NOTHING!
                   })
                 : []
 

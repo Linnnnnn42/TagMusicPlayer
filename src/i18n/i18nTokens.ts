@@ -17,6 +17,9 @@ export const i18nTokens = {
             errorMsg: {
                 failToAddTag: 'tabs.tagsContent.errorMsg.failToAddTag',
                 failToDeleteTag: 'tabs.tagsContent.errorMsg.failToDeleteTag',
+                emojiNotAllowed: 'tabs.tagsContent.errorMsg.emojiNotAllowed',
+                tagAlreadyExists: 'tabs.tagsContent.errorMsg.tagAlreadyExists',
+                tagNameCannotBeEmpty: 'tabs.tagsContent.errorMsg.tagNameCannotBeEmpty',
             },
         },
         songs: 'tabs.songs',

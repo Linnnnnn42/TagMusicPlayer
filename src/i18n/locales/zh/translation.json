@@ -16,7 +16,10 @@
             "listFooterComponent": "没有更多标签了",
             "errorMsg": {
                 "failToAddTag": "标签添加失败",
-                "failToDeleteTag": "标签删除失败"
+                "failToDeleteTag": "标签删除失败",
+                "emojiNotAllowed": "标签名称不能包含表情符号",
+                "tagAlreadyExists": "标签已存在",
+                "tagNameCannotBeEmpty": "标签名称不能为空"
             }
         },
         "songs": "歌曲",
