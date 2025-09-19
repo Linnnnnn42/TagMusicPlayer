@@ -1,11 +1,10 @@
-import { colors } from '@/constants/tokens'
 import { Searchbar, Surface } from 'react-native-paper'
 import { useState, useEffect, useRef } from 'react'
-import { View, Text, StyleSheet, Animated } from 'react-native'
+import { View, StyleSheet, Animated } from 'react-native'
 import RowCheckBox from '@/components/FloatingSearchBar/RowCheckbox'
 import * as React from 'react'
-import { useTranslation } from 'react-i18next'
 import { i18nTokens } from '@/i18n/i18nTokens'
+import { t } from 'i18next'
 
 type FloatingSearchBarProps = {
     visible?: boolean
@@ -26,8 +25,6 @@ const FloatingSearchBar = ({
     onSelectionChange,
     ref,
 }: FloatingSearchBarProps) => {
-    const { t, ready } = useTranslation()
-
     // UI / Animation
     const animatedValue = useRef(new Animated.Value(visible ? 1 : 0)).current
     const [visibility, setVisibility] = useState(visible)
@@ -71,7 +68,7 @@ const FloatingSearchBar = ({
     }, [visible, animatedValue])
 
     // If translation is not loaded, return null
-    if (!visibility || !ready) {
+    if (!visibility) {
         return null
     }
 

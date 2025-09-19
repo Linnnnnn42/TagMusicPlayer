@@ -1,5 +1,4 @@
 import { useContext, useMemo, useState } from 'react'
-import { useTranslation } from 'react-i18next'
 import { mediaLibraryContext } from '@/app/_layout'
 import { MinimalMusicInfo } from '@/database/types'
 
@@ -51,7 +50,6 @@ const useSongsSearch = () => {
     // Get Data
     const mediaLibrary = useContext(mediaLibraryContext)
     const { minimalMusicInfoList } = { ...mediaLibrary }
-    const { t } = useTranslation()
 
     // Search
     const [searchContent, setSearchContent] = useState('')

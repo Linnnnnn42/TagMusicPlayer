@@ -3,8 +3,8 @@ import TextTicker from 'react-native-text-ticker'
 import { colors, fontWeight } from '@/constants/tokens'
 import * as React from 'react'
 import { MinimalMusicInfo } from '@/database/types'
-import { useTranslation } from 'react-i18next'
 import { i18nTokens } from '@/i18n/i18nTokens'
+import { t } from 'i18next'
 
 type FloatingPlayerTextProps = {
     songInfoText?: Pick<MinimalMusicInfo, 'title' | 'lyrics'>
@@ -19,8 +19,6 @@ export const FloatingPlayerText = ({
     titleTextColor,
     lyricsTextColor,
 }: FloatingPlayerTextProps) => {
-    const { t } = useTranslation()
-
     return (
         <View
             style={{

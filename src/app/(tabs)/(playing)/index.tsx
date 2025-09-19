@@ -6,37 +6,26 @@ import TabHeader from '@/components/TabHeader'
 import React, { useContext } from 'react'
 import { i18nTokens } from '@/i18n/i18nTokens'
 import { Chip } from 'react-native-paper'
-import { mediaLibraryContext, musicPlayerContext, tagContext } from '@/app/_layout'
-import { useTagFilter } from '@/hooks/playingTab/useTagFilter'
+import { musicPlayerContext, tagContext, tagFilterContext } from '@/app/_layout'
 import { SongList } from '@/components/SongsList/SongList'
 
-export default function PlaylistsTab() {
-    // Get Lib Data
-    const mediaLibrary = useContext(mediaLibraryContext)
-    const { minimalMusicInfoList } = { ...mediaLibrary }
-
+export default function PlayingTab() {
     // Tag filtering
-    const { selectedTags, filteredSongs, toggleTagSelection } = useTagFilter({
-        minimalMusicInfoList,
-    })
+    const { selectedTags, filteredSongs, toggleTagSelection } = { ...useContext(tagFilterContext) }
 
     // Load tags
-    const tagManagement = useContext(tagContext)
-    if (!tagManagement) {
-        throw new Error('Tag context is not available')
-    }
-    const { tags } = tagManagement
+    const { tags } = { ...useContext(tagContext) }
 
     const renderTagItem = ({ item }: { item: string }) => (
         <View style={{ marginHorizontal: 3, marginVertical: 3 }}>
             <Chip
                 compact={true}
                 mode={'outlined'}
-                selected={selectedTags.has(item)}
+                selected={selectedTags ? selectedTags.has(item) : false}
                 showSelectedCheck={false}
                 showSelectedOverlay={true}
                 onPress={() => {
-                    toggleTagSelection(item)
+                    toggleTagSelection?.(item)
                 }}
             >
                 {item}

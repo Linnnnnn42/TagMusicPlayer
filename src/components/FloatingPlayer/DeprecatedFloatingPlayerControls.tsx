@@ -4,11 +4,13 @@ import { colors } from '@/constants/tokens'
 import * as React from 'react'
 import { AudioStatus } from 'expo-audio'
 
-interface PlayerControlsProps {
+interface DeprecatedFloatingPlayerControlsProps {
     playerStatus?: AudioStatus | undefined
 }
 
-export const PlayerControls = ({ playerStatus }: PlayerControlsProps) => {
+export const DeprecatedFloatingPlayerControls = ({
+    playerStatus,
+}: DeprecatedFloatingPlayerControlsProps) => {
     return (
         <View
             style={{

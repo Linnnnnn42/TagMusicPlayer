@@ -3,24 +3,19 @@ import defaultStyle from '@/styles/style'
 import { colors, paperThemeColors } from '@/constants/tokens'
 import TabHeader from '@/components/TabHeader'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import FloatingSearchBar from '@/components/FloatingSearchBar/FloatingSearchBar'
-import SearchButton from '@/components/FloatingSearchBar/SearchButton'
 import { useState, useContext } from 'react'
-import { useTranslation } from 'react-i18next'
 import { i18nTokens } from '@/i18n/i18nTokens'
 import { tagContext } from '@/app/_layout'
 import { Divider, Portal, Snackbar } from 'react-native-paper'
 import { UniformListUtilComponent } from '@/components/ListUtilComponents'
+import { t } from 'i18next'
 
 export default function TagsTab() {
-    // const [visible, setVisible] = useState(false)
     const [undoDeleteSnackbarVisible, setUndoDeleteSnackbarVisible] = useState(false)
 
     const onDismissUndoDeleteSnackbar = () => {
         setUndoDeleteSnackbarVisible(false)
     }
-
-    const { t } = useTranslation()
 
     const [newTagName, setNewTagName] = useState('')
     const tagManagement = useContext(tagContext)

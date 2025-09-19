@@ -3,12 +3,17 @@ import * as tagDb from '@/database/songTagLinkedWrapper'
 import { MinimalMusicInfo } from '@/database/types'
 import { useMMKV, useMMKVListener } from 'react-native-mmkv'
 import { dbIds } from '@/database/dbIds'
+import { readPlayingSelectedTags, updatePlayingSelectedTags } from '@/database/envStorage'
 
 interface UseTagFilterProps {
     minimalMusicInfoList: MinimalMusicInfo[] | undefined
+    tagManagementLoading: boolean
 }
 
-export const useTagFilter = ({ minimalMusicInfoList }: UseTagFilterProps) => {
+export const useTagFilter = ({ minimalMusicInfoList, tagManagementLoading }: UseTagFilterProps) => {
+    // Loading state
+    const [loading, setLoading] = useState(true)
+
     // Tag selection state
     const [selectedTags, setSelectedTags] = useState<Set<string>>(new Set())
     const [filteredSongs, setFilteredSongs] = useState<MinimalMusicInfo[]>([])
@@ -49,11 +54,25 @@ export const useTagFilter = ({ minimalMusicInfoList }: UseTagFilterProps) => {
             } else {
                 newSelected.add(tag)
             }
+            updatePlayingSelectedTags(newSelected)
+            console.log(readPlayingSelectedTags())
             return newSelected
         })
     }
 
+    // Recover last time's playingSelectedTags
+    useEffect(() => {
+        if (!tagManagementLoading) {
+            const lastPlayingSelectedTags = readPlayingSelectedTags()
+            if (lastPlayingSelectedTags !== null) {
+                setSelectedTags(lastPlayingSelectedTags)
+                setLoading(false)
+            }
+        }
+    }, [tagManagementLoading])
+
     return {
+        loading,
         selectedTags,
         filteredSongs,
         toggleTagSelection,

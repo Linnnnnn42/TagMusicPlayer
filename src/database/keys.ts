@@ -14,4 +14,8 @@ export const keys = {
     // Song_{Name}_Tag keys - Store tags attached to the song
     SONG_TAG_PREFIX: 'song_',
     SONG_TAG_SUFFIX: '_tag',
+
+    // Env keys
+    HAS_LAUNCHED: 'hasLaunched',
+    LAST_PLAYING_SELECTED_TAGS: 'lastPlayingSelectedTags',
 }

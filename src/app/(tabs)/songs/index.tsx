@@ -9,7 +9,7 @@ import SearchButton from '@/components/FloatingSearchBar/SearchButton'
 import useSongsSearch from '@/hooks/songsTab/useSongsSearch'
 import { mediaLibraryContext, musicPlayerContext } from '@/app/_layout'
 
-export default function () {
+export default function SongsTab() {
     // Get global context
     const musicPlayer = useContext(musicPlayerContext)
     const mediaLibrary = useContext(mediaLibraryContext)

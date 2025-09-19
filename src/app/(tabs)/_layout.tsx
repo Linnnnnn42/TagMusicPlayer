@@ -1,10 +1,9 @@
 import { Tabs } from 'expo-router'
 import { colors, fontSize, fontWeight, tabIcons } from '@/constants/tokens'
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons'
-import { Pressable, StyleSheet, type ViewProps } from 'react-native'
+import { Pressable, type ViewProps } from 'react-native'
 import FloatingPlayer from '@/components/FloatingPlayer/FloatingPlayer'
-import React, { useCallback, useContext, useEffect, useRef, useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import BottomPlayer, { type BottomPlayerHandle } from '@/components/BottomPlayer/BottomPlayer'
 import { musicPlayerContext } from '@/app/_layout'
 import useCoverColors from '@/hooks/player/useCoverColors'
@@ -12,6 +11,7 @@ import { MinimalMusicInfo } from '@/database/types'
 import { AudioPlayer, AudioStatus } from 'expo-audio'
 import { i18nTokens } from '@/i18n/i18nTokens'
 import { useSyncLyrics } from '@/hooks/player/useSyncLyrics'
+import { t } from 'i18next'
 
 export type PlayerProps = {
     songInfo?: MinimalMusicInfo
@@ -39,16 +39,16 @@ const TabBarButton = ({
 
 // tabBar config
 const tabScreens = [
+    // {
+    //     name: 'songs',
+    //     title: 'tabs.songs',
+    //     icon: {
+    //         name: tabIcons.songs as keyof typeof MaterialCommunityIcons.glyphMap,
+    //         size: 28,
+    //     },
+    // },
     {
-        name: '(songs)',
-        title: 'tabs.songs',
-        icon: {
-            name: tabIcons.songs as keyof typeof MaterialCommunityIcons.glyphMap,
-            size: 28,
-        },
-    },
-    {
-        name: 'playing',
+        name: '(playing)',
         title: 'tabs.playing',
         icon: {
             name: tabIcons.playlists as keyof typeof MaterialCommunityIcons.glyphMap,
@@ -63,12 +63,17 @@ const tabScreens = [
             size: 28,
         },
     },
+    {
+        name: 'songs',
+        title: 'tabs.songs',
+        icon: {
+            name: tabIcons.songs as keyof typeof MaterialCommunityIcons.glyphMap,
+            size: 28,
+        },
+    },
 ] as const
 
 export default function TabsLayout() {
-    // Get translation
-    const { t } = useTranslation()
-
     // Get global context
     const musicPlayer = useContext(musicPlayerContext)
     if (!musicPlayer) {

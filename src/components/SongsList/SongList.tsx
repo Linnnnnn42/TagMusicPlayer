@@ -9,7 +9,7 @@ import { SongsListItem, SongsListItemProps } from '@/components/SongsList/SongsL
 import { JSX, useCallback } from 'react'
 
 type SongListProps = {
-    filteredMusicInfoList: SongsListItemProps['song'][]
+    filteredMusicInfoList?: SongsListItemProps['song'][]
     songIdPlaying?: string | undefined
     onSongChange?: ((songId: string) => void) | undefined
     customizedContentContainerStyle?: {}
