@@ -13,8 +13,7 @@ Read this in other languages: [English](README.md), [中文](README-zh.md).
 ### Library Management
 - Automatic music library scanning and organization
 - Search and filter capabilities by title, artist, or lyrics
-- [TO-DO] Tag-based music categorization
-- [TO-DO] Favorites system for quick access to preferred tracks
+- Tag-based music categorization
 
 ### User Interface
 - Dynamic color themes based on artwork / cover
@@ -27,7 +26,6 @@ Read this in other languages: [English](README.md), [中文](README-zh.md).
 ## TO-DO
 ### Features / Refactor
 - Reduce Flickering
-- Upgrade Cache System
 - Encapsulate and use cpp language taglib library to improve reading efficiency
 - Splash screen, more detailed loading prompts
 - Keyboard handling
